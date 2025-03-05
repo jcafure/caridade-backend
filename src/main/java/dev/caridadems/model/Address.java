@@ -23,4 +23,12 @@ public class Address extends BaseEntity{
     @ManyToOne
     @JoinColumn(name = "city_id")
     private City city;
+
+    @ManyToOne
+    @JoinColumn(name = "donor_id")
+    private Donor donor;
+
+    @ManyToOne
+    @JoinColumn(name = "charityGroup_id")
+    private CharityGroup charityGroup;
 }

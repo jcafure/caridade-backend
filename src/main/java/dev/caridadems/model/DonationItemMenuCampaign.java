@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "donation_item__menu_campaign")
+@Table(name = "donation_item_menu_campaign")
 public class DonationItemMenuCampaign extends BaseEntity{
 
     @OneToOne

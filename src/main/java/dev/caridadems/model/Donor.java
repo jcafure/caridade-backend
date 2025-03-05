@@ -1,11 +1,15 @@
 package dev.caridadems.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -18,5 +22,7 @@ public class Donor extends BaseEntity{
     private String name;
     private String email;
     private String phone;
-    private String address;
+
+    @OneToMany(mappedBy = "donor", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Address> address;
 }
