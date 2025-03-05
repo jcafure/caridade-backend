@@ -20,7 +20,7 @@ public class Campaign extends BaseEntity{
     private LocalDate dateInit;
     private LocalDate dateEnd;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     private StatusCampaign status;
 
     @ManyToOne

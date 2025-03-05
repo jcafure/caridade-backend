@@ -1,6 +1,5 @@
 package dev.caridadems.model;
 
-import dev.caridadems.domain.ProductCategory;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -9,19 +8,14 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @EqualsAndHashCode(callSuper = true)
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
-@Table(name = "product")
-public class Product extends BaseEntity{
+@Table(name = "state")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class State extends BaseEntity{
 
     private String name;
 
-    /*
-    Unidade de medida
-    */
-    private String unitOfMeasure;
-
-    private ProductCategory productCategory;
+    private String Sigla;
 }

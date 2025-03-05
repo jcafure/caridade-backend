@@ -18,9 +18,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class Donation extends BaseEntity{
 
-    private LocalDate donationDate;
-    private double quantity;
-
     @ManyToOne
     @JoinColumn(name = "donor_id")
     private Donation donation;
@@ -28,4 +25,7 @@ public class Donation extends BaseEntity{
     @ManyToOne
     @JoinColumn(name = "donation_item_id")
     private DonationItem donationItem;
+
+    private LocalDate donationDate;
+    private double quantity;
 }

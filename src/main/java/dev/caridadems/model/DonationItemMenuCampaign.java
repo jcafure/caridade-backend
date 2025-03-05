@@ -1,7 +1,7 @@
 package dev.caridadems.model;
 
-import dev.caridadems.domain.ProductCategory;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,18 +10,17 @@ import lombok.NoArgsConstructor;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name = "product")
-public class Product extends BaseEntity{
+@Table(name = "donation_item__menu_campaign")
+public class DonationItemMenuCampaign extends BaseEntity{
 
-    private String name;
+    @OneToOne
+    private Donor donor;
 
-    /*
-    Unidade de medida
-    */
-    private String unitOfMeasure;
+    @OneToOne
+    private DonationItem donationItem;
 
-    private ProductCategory productCategory;
+    private Double quantity;
 }

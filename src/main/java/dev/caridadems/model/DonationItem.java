@@ -1,9 +1,7 @@
 package dev.caridadems.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import dev.caridadems.domain.StatusDonationItemMenuCampaign;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,6 +26,9 @@ public class DonationItem extends BaseEntity{
     @ManyToOne
     @JoinColumn(name = "campaign_id")
     private Campaign campaign;
+
+    @Enumerated(EnumType.ORDINAL)
+    private StatusDonationItemMenuCampaign statusItem;
 
     private Double quantity;
 
