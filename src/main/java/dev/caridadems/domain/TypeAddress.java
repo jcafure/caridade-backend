@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 public enum TypeAddress {
 
     LOCAL_JOB(0, "Local de trabalho"),
-    HOME(1, "Residência");
+    HOME(1, "Residência"),
+    PREPARATION_LOCATION(2, "Local de preparo");
 
     private Integer id;
     private String value;

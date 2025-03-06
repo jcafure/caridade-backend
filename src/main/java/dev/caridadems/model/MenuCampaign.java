@@ -18,7 +18,7 @@ public class MenuCampaign extends BaseEntity{
 
     private String mealType;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "donationItem_id")
     private List<DonationItem> donationItems = new ArrayList<>();
 }
