@@ -1,8 +1,7 @@
 package dev.caridadems.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import dev.caridadems.domain.TypeAddress;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -31,4 +30,7 @@ public class Address extends BaseEntity{
     @ManyToOne
     @JoinColumn(name = "charityGroup_id")
     private CharityGroup charityGroup;
+
+    @Enumerated(EnumType.ORDINAL)
+    private TypeAddress typeAddress;
 }
