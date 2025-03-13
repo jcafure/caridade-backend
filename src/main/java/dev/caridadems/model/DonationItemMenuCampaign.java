@@ -1,12 +1,12 @@
 package dev.caridadems.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -16,11 +16,13 @@ import lombok.NoArgsConstructor;
 @Table(name = "donation_item_menu_campaign")
 public class DonationItemMenuCampaign extends BaseEntity{
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "donor_id")
     private Donor donor;
 
     @OneToOne
     private DonationItem donationItem;
 
+    private LocalDate donationDate;
     private Double quantity;
 }

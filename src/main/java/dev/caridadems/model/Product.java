@@ -1,7 +1,10 @@
 package dev.caridadems.model;
 
 import dev.caridadems.domain.ProductCategory;
+import dev.caridadems.domain.UnitOfMeasure;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,10 +21,9 @@ public class Product extends BaseEntity{
 
     private String name;
 
-    /*
-    Unidade de medida
-    */
-    private String unitOfMeasure;
+    @Enumerated(EnumType.ORDINAL)
+    private UnitOfMeasure unitOfMeasure;
 
+    @Enumerated(EnumType.ORDINAL)
     private ProductCategory productCategory;
 }

@@ -23,4 +23,7 @@ public class Donor extends BaseEntity{
 
     @OneToMany(mappedBy = "donor", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Address> address;
+
+    @OneToMany(mappedBy = "donor", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DonationItemMenuCampaign> donationItemMenuCampaigns;
 }

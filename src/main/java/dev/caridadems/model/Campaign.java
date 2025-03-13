@@ -28,9 +28,5 @@ public class Campaign extends BaseEntity{
     private CharityGroup charityGroup;
 
     @OneToMany(mappedBy = "campaign", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<DonationItem> donationItems = new ArrayList<>();
-
-    @ManyToOne
-    @JoinColumn(name = "menu_campaign_id")
-    private MenuCampaign menuCampaigns;
+    private List<MenuCampaign> menuCampaigns;
 }

@@ -7,17 +7,19 @@ import dev.caridadems.model.Donor;
 import dev.caridadems.model.State;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 import java.util.Arrays;
 
-@ExtendWith(MockitoExtension.class)
+@DataJpaTest
 class DonorRepositoryTest {
 
-    @Mock
+    @Autowired
+    private TestEntityManager testEntityManager;
+
+    @Autowired
     private DonorRepository donorRepository;
 
     @Test
@@ -25,10 +27,12 @@ class DonorRepositoryTest {
         final var state = new State();
         state.setName("Mato Grosso do Sul");
         state.setSigla("MS");
+        testEntityManager.persist(state);
 
         final var city = new City();
         city.setName("Big Field Hell City");
         city.setState(state);
+        testEntityManager.persist(city);
 
         final var address01 = new Address();
         address01.setCep("79117852");
@@ -37,6 +41,7 @@ class DonorRepositoryTest {
         address01.setComplement("Casa");
         address01.setTypeAddress(TypeAddress.HOME);
         address01.setCity(city);
+        testEntityManager.persist(address01);
 
         final var address02 = new Address();
         address02.setCep("79117763");
@@ -45,14 +50,13 @@ class DonorRepositoryTest {
         address02.setComplement("Trabalho");
         address02.setTypeAddress(TypeAddress.LOCAL_JOB);
         address02.setCity(city);
+        testEntityManager.persist(address02);
 
         final var donor = new Donor();
         donor.setName("Jaime");
         donor.setEmail("jaiminho@teste");
         donor.setPhone("67982153447");
         donor.setAddress(Arrays.asList(address01, address02));
-
-        Mockito.when(donorRepository.save(donor)).thenReturn(donor);
 
         final var donorSave = donorRepository.save(donor);
 

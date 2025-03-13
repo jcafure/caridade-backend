@@ -7,17 +7,18 @@ import dev.caridadems.model.City;
 import dev.caridadems.model.State;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import java.util.List;
 
-@ExtendWith(MockitoExtension.class)
+@DataJpaTest
  class CharityGroupRepositoryTest {
 
-    @Mock
+    @Autowired
+    private TestEntityManager testEntityManager;
+
+    @Autowired
     private CharityGroupRepository repository;
 
     @Test
@@ -30,7 +31,6 @@ import java.util.List;
         groupCharity.setEmail("caridadems@gmail.com");
         groupCharity.setAddress(List.of(address01));
 
-        Mockito.when(repository.save(groupCharity)).thenReturn(groupCharity);
         final var groupSave = repository.save(groupCharity);
 
         Assertions.assertNotNull(groupSave);
@@ -41,14 +41,17 @@ import java.util.List;
 
     }
 
-    private static Address getAddress() {
+    private Address getAddress() {
         final var state = new State();
         state.setName("Mato Grosso do Sul");
         state.setSigla("MS");
+        testEntityManager.persist(state);
 
         final var city = new City();
         city.setName("Big Field Hell City");
         city.setState(state);
+        testEntityManager.persist(city);
+
 
         final var address01 = new Address();
         address01.setCep("79117852");
@@ -57,6 +60,7 @@ import java.util.List;
         address01.setComplement("Maçonaria");
         address01.setTypeAddress(TypeAddress.PREPARATION_LOCATION);
         address01.setCity(city);
+        testEntityManager.persist(address01);
         return address01;
     }
 }

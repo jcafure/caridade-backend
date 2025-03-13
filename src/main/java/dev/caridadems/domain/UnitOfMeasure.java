@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
-public enum unitOfMeasure {
+public enum UnitOfMeasure {
 
     KG (0, "Kilogramas"),
     lT (1, "Litros"),
