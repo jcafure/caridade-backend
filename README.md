@@ -20,8 +20,6 @@ PostgreSQL - Banco de dados principal
 
 Flyway - Controle de versionamento do banco de dados
 
-H2 - Banco de dados em memória para testes
-
 🎯 Como Funciona
 
 🏡 Grupos de Atendimento
