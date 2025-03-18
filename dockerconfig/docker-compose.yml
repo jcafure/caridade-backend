@@ -1,0 +1,48 @@
+version: '3.9'
+
+services:
+  caridadems:
+    image: 'caridadems-postgres:latest'
+    build:
+      context: ../
+      dockerfile: Dockerfile
+    container_name: caridade_app
+    depends_on:
+      local-postgres:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: dev01
+      DB_HOST: local-postgres
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: admin
+      DB_NAME: caridadedb
+    networks:
+      - postgres-compose-network
+
+  local-postgres:
+    image: postgres
+    container_name: postgres-caridadems
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "admin"
+      POSTGRES_DB: "caridadedb"
+    ports:
+      - "5434:5432"
+    networks:
+      - postgres-compose-network
+    volumes:
+      - caridade-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+networks:
+  postgres-compose-network:
+    driver: bridge
+
+volumes:
+  caridade-postgres-data:
