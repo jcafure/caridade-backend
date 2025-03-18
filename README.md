@@ -12,7 +12,7 @@ A plataforma permitirá:
 
 🚀 Tecnologias Utilizadas
 
-Java 21 - Backend da aplicação
+Java 22 - Backend da aplicação
 
 Spring Boot 3.4.3 - Framework para desenvolvimento rápido e robusto
 
