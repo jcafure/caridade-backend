@@ -21,7 +21,7 @@ services:
       - postgres-compose-network
 
   local-postgres:
-    image: postgres:15
+    image: postgres
     container_name: postgres-caridadems
     environment:
       POSTGRES_USER: "postgres"
