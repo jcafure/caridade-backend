@@ -88,3 +88,6 @@ Parâmetro   | Valor
 
 jdbc:postgresql://localhost:5434/caridadedb
 
+📌 Rodando com docker Passo a Passo:
+1️⃣ Acessar a pasta dockerconfig dentro do projeto
+2️⃣ rodar via terminal: dockercompose-up --buid
