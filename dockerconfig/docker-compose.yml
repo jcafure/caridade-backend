@@ -2,11 +2,11 @@ version: '3.9'
 
 services:
   caridadems:
-    image: 'caridadems-postgres:latest'
+    image: 'caridadems-app:latest'
     build:
       context: ../
       dockerfile: Dockerfile
-    container_name: caridade_app
+    container_name: caridade_service
     depends_on:
       local-postgres:
         condition: service_healthy
@@ -40,9 +40,29 @@ services:
       retries: 5
       start_period: 5s
 
+  sonarqube:
+    image: sonarqube:lts
+    container_name: sonarqube-caridadems
+    ports:
+      - "9000:9000"
+    environment:
+      - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
+    networks:
+      - postgres-compose-network
+    volumes:
+      - sonarqube-data:/opt/sonarqube/data
+      - sonarqube-extensions:/opt/sonarqube/extensions
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9000/api/system/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
 networks:
   postgres-compose-network:
     driver: bridge
 
 volumes:
   caridade-postgres-data:
+  sonarqube-data:
+  sonarqube-extensions:
