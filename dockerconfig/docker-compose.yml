@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   caridadems:
     image: 'caridadems-app:latest'
@@ -17,6 +15,8 @@ services:
       DB_USER: postgres
       DB_PASSWORD: admin
       DB_NAME: caridadedb
+    ports:
+      - "9090:8080"
     networks:
       - postgres-compose-network
 
