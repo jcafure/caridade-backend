@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public enum UnitOfMeasure {
 
     KG (0, "Kilogramas"),
-    lT (1, "Litros"),
+    LITROS (1, "Litros"),
     UN(2, "Unidade"),
     GR(3, "Gramas");
 
