@@ -36,7 +36,7 @@ jobs:
         run: mvn clean verify
 
   sonar:
-    name: SonarQube Analysis
+    name: SonarCloud Analysis
     runs-on: ubuntu-latest
     needs: build
 
@@ -51,7 +51,7 @@ jobs:
           java-version: 22
           distribution: 'zulu'
 
-      - name: Cache SonarQube packages
+      - name: Cache SonarCloud packages
         uses: actions/cache@v4
         with:
           path: ~/.sonar/cache
@@ -65,7 +65,11 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      - name: Run SonarQube analysis with coverage
+      - name: Run SonarCloud analysis with coverage
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=jcafure_caridade-backend
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+          -Dsonar.projectKey=jcafure_caridade-backend \
+          -Dsonar.organization=jcafure \
+          -Dsonar.host.url=https://sonarcloud.io \
+          -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
