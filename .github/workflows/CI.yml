@@ -68,7 +68,8 @@ jobs:
       - name: Run SonarCloud analysis with coverage
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+        run: |
+          mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
           -Dsonar.projectKey=jcafure_caridade-backend \
           -Dsonar.organization=jcafure \
           -Dsonar.host.url=https://sonarcloud.io \
