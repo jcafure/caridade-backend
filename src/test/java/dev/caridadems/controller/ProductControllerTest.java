@@ -37,12 +37,12 @@ class ProductControllerTest {
 
     @Test
     void shouldCreateProductSuccessfully() throws Exception {
-        ProductDTO requestDto = new ProductDTO();
+        final var requestDto = new ProductDTO();
         requestDto.setName("Arroz");
         requestDto.setCategoryProduct("Alimento");
         requestDto.setUnitOfMeasure("Kilogramas");
 
-        ProductDTO responseDto = new ProductDTO();
+        final var responseDto = new ProductDTO();
         responseDto.setId(1);
         responseDto.setName("Arroz");
         responseDto.setCategoryProduct("Alimento");
