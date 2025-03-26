@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProductMapper {
 
-    public Product converterDTO(ProductDTO productDTO) {
+    public Product converterDtoToEntity(ProductDTO productDTO) {
         final var product = new Product();
         product.setName(productDTO.getName());
         product.setUnitOfMeasure(UnitOfMeasure.toEnum(productDTO.getUnitOfMeasure()));

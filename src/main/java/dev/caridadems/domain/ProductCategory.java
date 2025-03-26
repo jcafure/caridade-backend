@@ -1,7 +1,6 @@
 package dev.caridadems.domain;
 
 
-import dev.caridadems.controller.ProductController;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
