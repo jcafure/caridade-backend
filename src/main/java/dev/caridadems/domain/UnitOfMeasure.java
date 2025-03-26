@@ -16,4 +16,16 @@ public enum UnitOfMeasure {
 
     private final Integer id;
     private final String value;
+
+    public static UnitOfMeasure toEnum(String value) {
+        if ((value == null)) {
+            return null;
+        }
+        for (UnitOfMeasure unitOfMeasure: UnitOfMeasure.values()) {
+            if (value.equals(unitOfMeasure.getValue())){
+                return unitOfMeasure;
+            }
+        }
+        return null;
+    }
 }

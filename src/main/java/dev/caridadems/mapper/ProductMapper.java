@@ -12,8 +12,8 @@ public class ProductMapper {
     public Product converterDTO(ProductDTO productDTO) {
         final var product = new Product();
         product.setName(productDTO.getName());
-        product.setUnitOfMeasure(UnitOfMeasure.valueOf(productDTO.getUnitOfMeasure()));
-        product.setProductCategory(ProductCategory.valueOf((productDTO.getCategoryProduct())));
+        product.setUnitOfMeasure(UnitOfMeasure.toEnum(productDTO.getUnitOfMeasure()));
+        product.setProductCategory(ProductCategory.toEnum((productDTO.getCategoryProduct())));
         return product;
     }
 
