@@ -17,5 +17,5 @@ public class State extends BaseEntity{
 
     private String name;
 
-    private String Sigla;
+    private String sigla;
 }

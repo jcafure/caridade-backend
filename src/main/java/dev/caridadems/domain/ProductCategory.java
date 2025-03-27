@@ -14,4 +14,16 @@ public enum ProductCategory {
 
     private final Integer id;
     private final String valor;
+
+    public static ProductCategory toEnum (String value) {
+        if(value == null ){
+            return null;
+        }
+        for (ProductCategory productCategory : ProductCategory.values()) {
+            if (value.equals(productCategory.getValor())){
+                return productCategory;
+            }
+        }
+        return null;
+    }
 }
