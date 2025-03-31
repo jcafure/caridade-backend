@@ -15,8 +15,8 @@ public class ProductMapper {
             product.setId(productDTO.getId());
         }
         product.setName(productDTO.getName());
-        product.setUnitOfMeasure(UnitOfMeasure.toEnum(productDTO.getUnitOfMeasure()));
-        product.setProductCategory(ProductCategory.toEnum((productDTO.getCategoryProduct())));
+        product.setUnitOfMeasure(UnitOfMeasure.valueOf(productDTO.getUnitOfMeasure().trim().toUpperCase()));
+        product.setProductCategory(ProductCategory.valueOf(productDTO.getCategoryProduct().trim().toUpperCase()));
         return product;
     }
 

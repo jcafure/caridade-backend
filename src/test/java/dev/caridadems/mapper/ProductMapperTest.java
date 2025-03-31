@@ -24,14 +24,14 @@ class ProductMapperTest {
     void testConvertDtoToEntity() {
         final var dto = new ProductDTO();
         dto.setName("Arroz");
-        dto.setCategoryProduct("Alimento");
-        dto.setUnitOfMeasure("Kilogramas");
+        dto.setCategoryProduct(ProductCategory.FOOD.name());
+        dto.setUnitOfMeasure(UnitOfMeasure.KG.name());
 
         final var product = mapper.converterDtoToEntity(dto);
 
         Assertions.assertEquals(product.getName(), dto.getName());
-        Assertions.assertEquals(product.getUnitOfMeasure().getValue(), dto.getUnitOfMeasure());
-        Assertions.assertEquals(product.getProductCategory().getValor(), dto.getCategoryProduct());
+        Assertions.assertEquals(product.getUnitOfMeasure().name(), dto.getUnitOfMeasure());
+        Assertions.assertEquals(product.getProductCategory().name(), dto.getCategoryProduct());
     }
 
     @Test

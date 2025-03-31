@@ -25,6 +25,11 @@ public class ProductService {
 
     @Transactional
     public ProductDTO saveProduct(ProductDTO productDTO) {
+        boolean exists = productRepository.existsByNameIgnoreCase(productDTO.getName());
+
+        if (exists) {
+            throw new RuntimeException("Já existe um produto com esse nome.");
+        }
         return mapper.converterEntityToDto(productRepository.save(mapper.converterDtoToEntity(productDTO)));
     }
 
