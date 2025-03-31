@@ -1,6 +1,9 @@
 package dev.caridadems.service;
 
 import dev.caridadems.dto.ProductDTO;
+import dev.caridadems.exception.ObjectAlreadyExistsException;
+import dev.caridadems.exception.ObjectDeleteException;
+import dev.caridadems.exception.ObjectNotFoundException;
 import dev.caridadems.mapper.ProductMapper;
 import dev.caridadems.model.Product;
 import dev.caridadems.repository.ProductRepository;
@@ -28,7 +31,7 @@ public class ProductService {
         boolean exists = productRepository.existsByNameIgnoreCase(productDTO.getName());
 
         if (exists) {
-            throw new RuntimeException("Já existe um produto com esse nome.");
+            throw new ObjectAlreadyExistsException("Já existe um produto com esse nome.");
         }
         return mapper.converterEntityToDto(productRepository.save(mapper.converterDtoToEntity(productDTO)));
     }
@@ -36,7 +39,7 @@ public class ProductService {
     @Transactional
     public ProductDTO editProduct(ProductDTO productDTO) {
         if (!productRepository.existsById(productDTO.getId())) {
-            throw new EntityNotFoundException("Produto com id: " + productDTO.getId() + " não encontrado");
+            throw new ObjectNotFoundException("Produto com id: " + productDTO.getId() + " não encontrado");
         }
        return mapper.converterEntityToDto(productRepository.save(mapper.converterDtoToEntity(productDTO))) ;
     }
@@ -44,8 +47,12 @@ public class ProductService {
     @Transactional
     public void deleteProduct(Integer id) {
         final var product = productRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Produto com ID " + id + " não encontrado."));
-        productRepository.delete(product);
+                .orElseThrow(() -> new ObjectNotFoundException("Produto com ID " + id + " não encontrado."));
+        try {
+            productRepository.delete(product);
+        }catch (Exception e) {
+                throw new ObjectDeleteException("Não foi possível remover o produto.");
+        }
     }
 
     public Page<ProductDTO> findAll(Pageable pageable) {

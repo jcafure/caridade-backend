@@ -2,11 +2,9 @@ package dev.caridadems.controller;
 
 import dev.caridadems.dto.ProductDTO;
 import dev.caridadems.service.ProductService;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,8 +15,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/products")
@@ -39,33 +35,18 @@ public class ProductController {
     }
 
     @PostMapping(value = "/new-product")
-    public ResponseEntity<?> createProduct(@RequestBody ProductDTO productDTO) {
-        try{
-            return ResponseEntity.ok(productService.saveProduct(productDTO));
-        } catch (RuntimeException e) {
-            return ResponseEntity
-                    .status(HttpStatus.CONFLICT)
-                    .body(Map.of("message", e.getMessage()));
-        }
+    public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO productDTO) {
+        return ResponseEntity.ok(productService.saveProduct(productDTO));
     }
 
     @PutMapping(value = "/update-product")
     public ResponseEntity<ProductDTO> updateProduct(@RequestBody ProductDTO productDTO) {
-        try{
-            return ResponseEntity.ok(productService.editProduct(productDTO));
-        } catch (EntityNotFoundException ex) {
-            ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-        }
-        return null;
+        return ResponseEntity.ok(productService.editProduct(productDTO));
     }
 
     @DeleteMapping(value = "/delete-product/{id}")
-    public ResponseEntity<?> delete(@PathVariable Integer id) {
-        try {
-            productService.deleteProduct(id);
-        }catch (EntityNotFoundException ex) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        return ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity<Void> delete(@PathVariable Integer id) {
+          productService.deleteProduct(id);
+         return ResponseEntity.noContent().build();
     }
 }
