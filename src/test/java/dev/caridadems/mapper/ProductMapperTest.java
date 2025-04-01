@@ -4,7 +4,6 @@ import dev.caridadems.domain.ProductCategory;
 import dev.caridadems.domain.UnitOfMeasure;
 import dev.caridadems.dto.ProductDTO;
 import dev.caridadems.model.Product;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
