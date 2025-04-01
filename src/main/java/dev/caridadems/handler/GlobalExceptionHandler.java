@@ -14,21 +14,21 @@ import java.util.Map;
 public class GlobalExceptionHandler {
     private static final String ERROR_MESSAGE_KEY = "message";
 
-    @ExceptionHandler(ObjectAlreadyExistsException.class)
-    public ResponseEntity<Map<String, String>> handleProductAlreadyExists(ObjectAlreadyExistsException ex) {
-        return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(Map.of(ERROR_MESSAGE_KEY, ex.getMessage()));
-    }
+        @ExceptionHandler(ObjectAlreadyExistsException.class)
+        public ResponseEntity<Map<String, String>> handleProductAlreadyExists(ObjectAlreadyExistsException ex) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(Map.of(ERROR_MESSAGE_KEY, ex.getMessage()));
+        }
 
-    @ExceptionHandler(ObjectDeleteException.class)
-    public ResponseEntity<Map<String, String>> handleDeleteError(ObjectDeleteException ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(Map.of(ERROR_MESSAGE_KEY, ex.getMessage()));
-    }
+        @ExceptionHandler(ObjectDeleteException.class)
+        public ResponseEntity<Map<String, String>> handleDeleteError(ObjectDeleteException ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of(ERROR_MESSAGE_KEY, ex.getMessage()));
+        }
 
-    @ExceptionHandler(ObjectNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleObjectNotFoundError(ObjectNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(Map.of(ERROR_MESSAGE_KEY, ex.getMessage()));
-    }
+        @ExceptionHandler(ObjectNotFoundException.class)
+        public ResponseEntity<Map<String, String>> handleObjectNotFoundError(ObjectNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of(ERROR_MESSAGE_KEY, ex.getMessage()));
+        }
 }

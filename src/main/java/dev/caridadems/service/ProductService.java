@@ -7,7 +7,6 @@ import dev.caridadems.exception.ObjectNotFoundException;
 import dev.caridadems.mapper.ProductMapper;
 import dev.caridadems.model.Product;
 import dev.caridadems.repository.ProductRepository;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -36,13 +35,13 @@ public class ProductService {
         return mapper.converterEntityToDto(productRepository.save(mapper.converterDtoToEntity(productDTO)));
     }
 
-    @Transactional
-    public ProductDTO editProduct(ProductDTO productDTO) {
-        if (!productRepository.existsById(productDTO.getId())) {
-            throw new ObjectNotFoundException("Produto com id: " + productDTO.getId() + " não encontrado");
+        @Transactional
+        public ProductDTO editProduct(ProductDTO productDTO) {
+            if (!productRepository.existsById(productDTO.getId())) {
+                throw new ObjectNotFoundException("Produto com id: " + productDTO.getId() + " não encontrado");
+            }
+           return mapper.converterEntityToDto(productRepository.save(mapper.converterDtoToEntityUpdate(productDTO))) ;
         }
-       return mapper.converterEntityToDto(productRepository.save(mapper.converterDtoToEntity(productDTO))) ;
-    }
 
     @Transactional
     public void deleteProduct(Integer id) {
@@ -55,8 +54,13 @@ public class ProductService {
         }
     }
 
-    public Page<ProductDTO> findAll(Pageable pageable) {
-        Page<Product> products = productRepository.findAll(pageable);
+    public Page<ProductDTO> findAll(Pageable pageable, String name) {
+        Page<Product> products;
+        if (name != null && !name.isBlank()){
+            products = productRepository.findByNameContainingIgnoreCase(name, pageable);
+        }else {
+            products = productRepository.findAll(pageable);
+        }
         return products.map(mapper::converterEntityToDto);
     }
 }

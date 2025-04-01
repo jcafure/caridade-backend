@@ -10,6 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 class ProductMapperTest {
 
     @InjectMocks
@@ -29,9 +32,9 @@ class ProductMapperTest {
 
         final var product = mapper.converterDtoToEntity(dto);
 
-        Assertions.assertEquals(product.getName(), dto.getName());
-        Assertions.assertEquals(product.getUnitOfMeasure().name(), dto.getUnitOfMeasure());
-        Assertions.assertEquals(product.getProductCategory().name(), dto.getCategoryProduct());
+        assertEquals(product.getName(), dto.getName());
+        assertEquals(product.getUnitOfMeasure().name(), dto.getUnitOfMeasure());
+        assertEquals(product.getProductCategory().name(), dto.getCategoryProduct());
     }
 
     @Test
@@ -44,8 +47,40 @@ class ProductMapperTest {
 
         final var productDtoResponse = mapper.converterEntityToDto(productEntity);
 
-        Assertions.assertEquals(productDtoResponse.getName(), productEntity.getName());
-        Assertions.assertEquals(productDtoResponse.getUnitOfMeasure(), productEntity.getUnitOfMeasure().getValue());
-        Assertions.assertEquals(productDtoResponse.getCategoryProduct(), productEntity.getProductCategory().getValor());
+        assertEquals(productDtoResponse.getName(), productEntity.getName());
+        assertEquals(productDtoResponse.getUnitOfMeasure(), productEntity.getUnitOfMeasure().getValue());
+        assertEquals(productDtoResponse.getCategoryProduct(), productEntity.getProductCategory().getValor());
+    }
+
+    @Test
+    void testConverterDtoToEntityUpdate() {
+        final var dto = new ProductDTO();
+        dto.setId(1);
+        dto.setName("Arroz");
+        dto.setUnitOfMeasure("Kilogramas");
+        dto.setCategoryProduct("Alimento");
+
+        Product entity = mapper.converterDtoToEntityUpdate(dto);
+        assertNotNull(entity);
+        assertEquals(1, entity.getId());
+        assertEquals("Arroz", entity.getName());
+        assertEquals(UnitOfMeasure.KG, entity.getUnitOfMeasure());
+        assertEquals(ProductCategory.FOOD, entity.getProductCategory());
+    }
+
+    @Test
+    void testConverterDtoToEntity() {
+        final var dto = new ProductDTO();
+        dto.setId(1);
+        dto.setName("Arroz");
+        dto.setUnitOfMeasure("kg");
+        dto.setCategoryProduct("food");
+
+        Product entity = mapper.converterDtoToEntity(dto);
+        assertNotNull(entity);
+        assertEquals(1, entity.getId());
+        assertEquals("Arroz", entity.getName());
+        assertEquals(UnitOfMeasure.KG, entity.getUnitOfMeasure());
+        assertEquals(ProductCategory.FOOD, entity.getProductCategory());
     }
 }
