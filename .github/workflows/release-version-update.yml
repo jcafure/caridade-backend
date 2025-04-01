@@ -1,0 +1,71 @@
+name: Release Version Update
+
+on:
+  workflow_dispatch:
+    inputs:
+      tipoVersao:
+        description: 'Tipo de versão (patch, minor, major)'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: 22
+          distribution: 'zulu'
+
+      - name: Ler versão atual do pom.xml
+        id: version
+        run: |
+          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          CLEAN_VERSION=$(echo "$VERSION" | sed 's/-SNAPSHOT//')
+          echo "current_version=$CLEAN_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Calcular próxima versão
+        id: next
+        run: |
+          CURRENT="${{ steps.version.outputs.current_version }}"
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT"
+          case "${{ github.event.inputs.tipoVersao }}" in
+            major)
+              MAJOR=$((MAJOR+1)); MINOR=0; PATCH=0 ;;
+            minor)
+              MINOR=$((MINOR+1)); PATCH=0 ;;
+            patch)
+              PATCH=$((PATCH+1)) ;;
+          esac
+          NEW_VERSION="$MAJOR.$MINOR.$PATCH"
+          echo "next_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Atualizar versão no pom.xml
+        run: |
+          mvn versions:set -DnewVersion=${{ steps.next.outputs.next_version }} -DgenerateBackupPoms=false
+
+      - name: Commit da nova versão
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git commit -am "chore: bump version to ${{ steps.next.outputs.next_version }}"
+          git push
+
+      - name: Criar nova tag e release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.next.outputs.next_version }}
+          name: Release ${{ steps.next.outputs.next_version }}
+          body: "Release criada manualmente após merge na main"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
