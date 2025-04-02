@@ -66,6 +66,19 @@ class ProductMapperTest {
         assertEquals(UnitOfMeasure.KG, entity.getUnitOfMeasure());
         assertEquals(ProductCategory.FOOD, entity.getProductCategory());
     }
+    @Test
+    void testConverterDtoToEntityUpdateNoId() {
+        final var dto = new ProductDTO();
+        dto.setName("Arroz");
+        dto.setUnitOfMeasure("Kilogramas");
+        dto.setCategoryProduct("Alimento");
+
+        Product entity = mapper.converterDtoToEntityUpdate(dto);
+        assertNotNull(entity);
+        assertEquals("Arroz", entity.getName());
+        assertEquals(UnitOfMeasure.KG, entity.getUnitOfMeasure());
+        assertEquals(ProductCategory.FOOD, entity.getProductCategory());
+    }
 
     @Test
     void testConverterDtoToEntity() {

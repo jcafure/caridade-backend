@@ -15,4 +15,13 @@ public enum TypeAddress {
 
     private Integer id;
     private String value;
+
+    public static TypeAddress toEnum(String label) {
+        for (TypeAddress type : TypeAddress.values()) {
+            if (type.getValue().equalsIgnoreCase(label)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("Tipo de endereço inválido: " + label);
+    }
 }
