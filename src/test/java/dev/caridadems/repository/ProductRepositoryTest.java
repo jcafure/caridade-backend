@@ -32,4 +32,25 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
         Assertions.assertEquals(productSave.getName(), product.getName());
         Assertions.assertEquals(productSave.getUnitOfMeasure(), product.getUnitOfMeasure());
     }
+
+   @Test
+   void testExistsByNameIgnoreCaseReturnsTrue() {
+      final var product = new Product();
+      product.setName("Arroz");
+      product.setUnitOfMeasure(UnitOfMeasure.KG);
+      product.setProductCategory(ProductCategory.FOOD);
+
+      productRepository.save(product);
+
+      boolean exists = productRepository.existsByNameIgnoreCase("arroz");
+
+      Assertions.assertTrue(exists);
+   }
+
+   @Test
+   void testExistsByNameIgnoreCaseReturnsFalse() {
+      boolean exists = productRepository.existsByNameIgnoreCase("Feijão");
+
+      Assertions.assertFalse(exists);
+   }
 }

@@ -22,7 +22,7 @@ public enum UnitOfMeasure {
             return null;
         }
         for (UnitOfMeasure unitOfMeasure: UnitOfMeasure.values()) {
-            if (value.equals(unitOfMeasure.getValue())){
+            if (unitOfMeasure.getValue().equalsIgnoreCase(value)){
                 return unitOfMeasure;
             }
         }
