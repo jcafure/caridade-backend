@@ -3,45 +3,41 @@ package dev.caridadems.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.caridadems.dto.AddressDTO;
 import dev.caridadems.dto.CharityGroupDTO;
-import dev.caridadems.dto.CityDTO;
 import dev.caridadems.service.CharityGroupService;
-import lombok.AllArgsConstructor;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@AutoConfigureMockMvc
+
 @WebMvcTest(CharityGroupController.class)
-@AllArgsConstructor
 class CharityGroupControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @MockitoBean
+    @Autowired
     private CharityGroupService charityGroupService;
 
-    private final ObjectMapper objectMapper;
+    @Autowired
+    private ObjectMapper objectMapper;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
+    @TestConfiguration
+    static class TestConfig {
+        @Bean
+        public CharityGroupService charityGroupService() {
+            return mock(CharityGroupService.class);
+        }
     }
 
     @Test
@@ -62,26 +58,15 @@ class CharityGroupControllerTest {
         verify(charityGroupService, times(1)).createCharityGroup(any(CharityGroupDTO.class));
     }
 
-    private static CharityGroupDTO getCharityGroupDTO() {
-        final var requestDto = new CharityGroupDTO();
-        requestDto.setName("Grupo Esperança");
-        requestDto.setEmail("grupo@esperanca.org");
-        requestDto.setPhone("67999999999");
-        requestDto.setDescription("Ajuda social");
+    private CharityGroupDTO getCharityGroupDTO() {
+        final var dto = new CharityGroupDTO();
+        dto.setName("Grupo Esperança");
+        dto.setEmail("grupo@esperanca.org");
 
-        final var cityDTO  = new CityDTO();
-        cityDTO.setName("Campo Grande");
-        cityDTO.setState("MS");
+        final var address = new AddressDTO();
+        address.setCep("79000-000");
+        dto.setAddress(List.of(address));
 
-        final var addressDTO = new AddressDTO();
-        addressDTO.setCep("79000-000");
-        addressDTO.setStreet("Rua das Acácias");
-        addressDTO.setNumber("123");
-        addressDTO.setComplement("Casa 1");
-        addressDTO.setTypeAddress("Residência");
-        addressDTO.setCity(cityDTO);
-
-        requestDto.setAddress(List.of(addressDTO));
-        return requestDto;
+        return dto;
     }
 }
