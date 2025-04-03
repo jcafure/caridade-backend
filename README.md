@@ -45,6 +45,31 @@ Se um doador contribuir com apenas uma parte dos itens (exemplo: doar 5kg de arr
 4️⃣ Distribuição das Refeições: Após arrecadar todos os itens, a campanha entra na fase de distribuição.
 5️⃣ Finalização da Campanha: Depois de distribuídas as refeições, a campanha é finalizada e arquivada.
 
+📦 Fluxo de Versionamento e Deploy
+
+Este projeto utiliza GitHub Actions para automatizar o versionamento, geração de Pull Requests e criação de releases.
+
+🛠 Atualização de Versão Manual:Um workflow chamado Release Version Update permite escolher entre patch, minor ou major. Ele:
+
+Calcula a nova versão com base no pom.xml
+
+Cria um novo branch release/vX.Y.Z
+
+Cria um Pull Request automaticamente para a branch main
+
+🔍 CI (Integração Contínua):O workflow CI Pipeline é executado em todos os pushes e pull requests. Ele:
+
+Compila e testa o projeto
+
+Executa análise de código no SonarCloud
+
+🚀 Release Automática na main:Após o merge do PR na branch main, o workflow release-on-main:
+
+Lê a versão do pom.xml
+
+Cria uma tag Git correspondente
+
+Publica uma release no GitHub com base nessa tag
 🔧 Configuração do Banco de Dados PostgreSQL
 
 🐳 Como Configurar o Banco de Dados no Docker
