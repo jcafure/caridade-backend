@@ -20,7 +20,7 @@ public class CharityGroupMapper {
     }
 
     public CharityGroupDTO toDTO(CharityGroup entity) {
-        CharityGroupDTO dto = new CharityGroupDTO();
+        final var dto = new CharityGroupDTO();
         dto.setId(entity.getId());
         dto.setName(entity.getName());
         dto.setDescription(entity.getDescription());

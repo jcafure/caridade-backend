@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 public class AddressMapper {
 
     public Address convertDtoToEntity(AddressDTO dto, City city) {
-        Address address = new Address();
+        final var address = new Address();
         address.setCep(dto.getCep());
         address.setStreet(dto.getStreet());
         address.setNumber(dto.getNumber());
@@ -22,7 +22,7 @@ public class AddressMapper {
     }
 
     public static AddressDTO toDTO(Address entity) {
-        AddressDTO dto = new AddressDTO();
+        final var dto = new AddressDTO();
         dto.setId(entity.getId());
         dto.setCep(entity.getCep());
         dto.setStreet(entity.getStreet());
@@ -38,7 +38,7 @@ public class AddressMapper {
     }
 
     private static CityDTO toCityDTO(City city) {
-        CityDTO dto = new CityDTO();
+        final var dto = new CityDTO();
         dto.setName(city.getName());
         dto.setState(city.getState().getName());
         return dto;

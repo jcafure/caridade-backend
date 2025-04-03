@@ -37,7 +37,7 @@ class ProductMapperTest {
     }
 
     @Test
-    void converterEntityToDto() {
+    void testConverterEntityToDto() {
         final var productEntity = new Product();
         productEntity.setId(1);
         productEntity.setName("Arroz");
@@ -66,6 +66,7 @@ class ProductMapperTest {
         assertEquals(UnitOfMeasure.KG, entity.getUnitOfMeasure());
         assertEquals(ProductCategory.FOOD, entity.getProductCategory());
     }
+
     @Test
     void testConverterDtoToEntityUpdateNoId() {
         final var dto = new ProductDTO();

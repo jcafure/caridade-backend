@@ -21,7 +21,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class CharityGroupServiceTest {
@@ -55,7 +57,7 @@ class CharityGroupServiceTest {
         dto.setPhone("67999999999");
         dto.setDescription("Distribuição de alimentos");
 
-        CityDTO cityDTO = new CityDTO();
+        final var cityDTO = new CityDTO();
         cityDTO.setName("Campo Grande");
         cityDTO.setState("MS");
 

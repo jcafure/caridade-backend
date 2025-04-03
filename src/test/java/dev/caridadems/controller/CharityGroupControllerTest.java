@@ -5,6 +5,7 @@ import dev.caridadems.dto.AddressDTO;
 import dev.caridadems.dto.CharityGroupDTO;
 import dev.caridadems.dto.CityDTO;
 import dev.caridadems.service.CharityGroupService;
+import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
@@ -27,6 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureMockMvc
 @WebMvcTest(CharityGroupController.class)
+@AllArgsConstructor
 class CharityGroupControllerTest {
 
     @Autowired
@@ -35,7 +37,7 @@ class CharityGroupControllerTest {
     @MockitoBean
     private CharityGroupService charityGroupService;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
@@ -67,11 +69,11 @@ class CharityGroupControllerTest {
         requestDto.setPhone("67999999999");
         requestDto.setDescription("Ajuda social");
 
-        CityDTO cityDTO = new CityDTO();
+        final var cityDTO  = new CityDTO();
         cityDTO.setName("Campo Grande");
         cityDTO.setState("MS");
 
-        AddressDTO addressDTO = new AddressDTO();
+        final var addressDTO = new AddressDTO();
         addressDTO.setCep("79000-000");
         addressDTO.setStreet("Rua das Acácias");
         addressDTO.setNumber("123");
