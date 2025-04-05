@@ -54,18 +54,19 @@ jobs:
         run: |
           mvn versions:set -DnewVersion=${{ steps.next.outputs.next_version }} -DgenerateBackupPoms=false
 
-      - name: Commit da nova versão
+      - name: Criar branch e commit
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
+          git checkout -b release/v${{ steps.next.outputs.next_version }}
           git commit -am "chore: bump version to ${{ steps.next.outputs.next_version }}"
-          git push
+          git push origin release/v${{ steps.next.outputs.next_version }}
 
-      - name: Criar nova tag e release
-        uses: softprops/action-gh-release@v1
+      - name: Criar Pull Request
+        uses: devops-infra/action-pull-request@v0.5.2
         with:
-          tag_name: ${{ steps.next.outputs.next_version }}
-          name: Release ${{ steps.next.outputs.next_version }}
-          body: "Release criada manualmente após merge na main"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          source_branch: release/v${{ steps.next.outputs.next_version }}
+          target_branch: main
+          title: "chore: bump version to ${{ steps.next.outputs.next_version }}"
+          body: "Pull request automático de bump de versão via CI."
