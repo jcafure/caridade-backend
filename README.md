@@ -18,10 +18,7 @@ A plataforma permitirá:
 
 ## Tecnologias Utilizadas
 
-- **Java 22** - Backend da aplicação
-- **Spring Boot 3.4.3** - Framework para desenvolvimento rápido e robusto
-- **PostgreSQL** - Banco de dados principal
-- **Flyway** - Controle de versionamento do banco de dados
+Spring Boot 3.4.3 - Framework para desenvolvimento rápido e robusto
 
 ---
 

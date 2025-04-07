@@ -1,0 +1,36 @@
+name: Criar Tag e Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: 22
+          distribution: 'zulu'
+
+      - name: Ler versão do pom.xml
+        id: version
+        run: |
+          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          CLEAN_VERSION=$(echo "$VERSION" | sed 's/-SNAPSHOT//')
+          echo "version=$CLEAN_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Criar Tag e Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          name: Release ${{ steps.version.outputs.version }}
+          body: "Release gerada automaticamente após merge na main."
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
