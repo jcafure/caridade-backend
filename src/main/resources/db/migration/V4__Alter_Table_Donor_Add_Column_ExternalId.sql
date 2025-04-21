@@ -1,0 +1,2 @@
+ALTER TABLE donor
+ADD COLUMN external_id INTEGER;
