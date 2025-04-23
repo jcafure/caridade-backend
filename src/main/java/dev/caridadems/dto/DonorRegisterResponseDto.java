@@ -11,4 +11,5 @@ public class DonorRegisterResponseDto {
 
     private boolean success;
     private Integer id;
+    private String name;
 }

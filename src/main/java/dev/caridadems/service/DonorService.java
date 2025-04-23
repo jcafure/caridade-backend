@@ -24,9 +24,11 @@ public class DonorService {
     @Transactional
     public DonorRegisterResponseDto newDonor(DonorRegisterDto donorRegisterDto) {
         var donor = donorMapper.dtoToEntity(donorRegisterDto);
-        donor.setAddress(buildAddress(donorRegisterDto));
+        List<Address> addresses = buildAddress(donorRegisterDto);
+        addresses.forEach(address -> address.setDonor(donor));
+        donor.setAddress(addresses);
         var donorSaved = donorRepository.save(donor);
-        return new DonorRegisterResponseDto(true, donorSaved.getId());
+        return new DonorRegisterResponseDto(true, donorSaved.getId(), donorSaved.getName());
 
     }
 
