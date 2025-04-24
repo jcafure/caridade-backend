@@ -6,7 +6,6 @@ import dev.caridadems.dto.DonorRegisterResponseDto;
 import dev.caridadems.service.DonorService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +53,5 @@ class DonorControllerTest {
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("Jaime"));;
-
     }
 }
