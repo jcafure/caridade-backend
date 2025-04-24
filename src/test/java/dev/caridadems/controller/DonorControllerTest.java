@@ -52,6 +52,6 @@ class DonorControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.name").value("Jaime"));;
+                .andExpect(jsonPath("$.name").value("Jaime"));
     }
 }
