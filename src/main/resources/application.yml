@@ -23,6 +23,12 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:9091/.well-known/jwks.json
+
 management:
   endpoints:
     web:
@@ -38,3 +44,4 @@ management:
     export:
       prometheus:
         enabled: true
+
