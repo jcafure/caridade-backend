@@ -27,7 +27,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: http://localhost:9091/.well-known/jwks.json
+          public-key-location: classpath:keys/public.key
 
 management:
   endpoints:
@@ -45,3 +45,7 @@ management:
       prometheus:
         enabled: true
 
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.security.oauth2: DEBUG

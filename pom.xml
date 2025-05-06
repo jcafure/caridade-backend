@@ -31,6 +31,7 @@
 		<sonar.organization>jcafure</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<sonar.coverage.exclusions>**/SecurityConfig.java</sonar.coverage.exclusions>
+		<sonar.coverage.exclusions>**/CorsConfiguration.java</sonar.coverage.exclusions>
 		<sonar.coverage.exclusions>**/TestSecurityConfig.java</sonar.coverage.exclusions>
 	</properties>
 	<dependencies>
