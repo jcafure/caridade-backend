@@ -22,7 +22,7 @@ public class Donor extends BaseEntity{
     private String name;
     private String email;
     private String phone;
-
+    private Integer externalId;
     @OneToMany(mappedBy = "donor", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Address> address;
 

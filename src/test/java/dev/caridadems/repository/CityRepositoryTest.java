@@ -32,7 +32,7 @@ class CityRepositoryTest {
         city.setName("Cidade teste");
         testEntityManager.persist(city);
 
-        Optional<City> found = cityRepository.findCityByName("Cidade teste");
+        Optional<City> found = cityRepository.findCityByNameContainingIgnoreCase("Cidade teste");
 
         assertTrue(found.isPresent());
         assertEquals("Cidade teste", found.get().getName());
@@ -40,7 +40,7 @@ class CityRepositoryTest {
 
     @Test
     void shouldReturnEmptyWhenCityNotFound() {
-        Optional<City> found = cityRepository.findCityByName("Cidade Inexistente");
+        Optional<City> found = cityRepository.findCityByNameContainingIgnoreCase("Cidade Inexistente");
         assertTrue(found.isEmpty());
     }
 }

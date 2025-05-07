@@ -12,7 +12,7 @@ public class CityService {
     private CityRepository cityRepository;
 
     public City findCityByName(String name) {
-       return cityRepository.findCityByName(name)
+       return cityRepository.findCityByNameContainingIgnoreCase(name)
                 .orElseThrow(() -> new IllegalArgumentException("Cidade não encontrada: " + name));
     }
 }

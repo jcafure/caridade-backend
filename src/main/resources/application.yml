@@ -23,6 +23,12 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          public-key-location: classpath:keys/public.key
+
 management:
   endpoints:
     web:
@@ -38,3 +44,8 @@ management:
     export:
       prometheus:
         enabled: true
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.security.oauth2: DEBUG

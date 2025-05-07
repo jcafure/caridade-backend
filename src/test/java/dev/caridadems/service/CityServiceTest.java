@@ -42,7 +42,7 @@ class CityServiceTest {
         city.setState(state);
         city.setName(nameCity);
 
-        Mockito.when(cityRepository.findCityByName(nameCity)).thenReturn(Optional.of(city));
+        Mockito.when(cityRepository.findCityByNameContainingIgnoreCase(nameCity)).thenReturn(Optional.of(city));
 
         final var response = cityService.findCityByName(nameCity);
         assertNotNull(response);
