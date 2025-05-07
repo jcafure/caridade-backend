@@ -163,6 +163,9 @@
 								<format>XML</format>
 								<format>HTML</format>
 							</formats>
+							<excludes>
+								<exclude>**/SecurityConfig.class</exclude>
+							</excludes>
 						</configuration>
 					</execution>
 				</executions>
