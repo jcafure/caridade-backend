@@ -63,4 +63,10 @@ public class ProductService {
         }
         return products.map(mapper::converterEntityToDto);
     }
+
+    public Product findById(Integer id) {
+        return  productRepository.findById(id)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Produto com ID" + id + " não encontrado"));
+    }
 }
