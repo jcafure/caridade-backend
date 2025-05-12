@@ -85,6 +85,100 @@ class MenuCampaignServiceTest {
         assertEquals(1, captured.getDonationItems().size());
         assertEquals(5.0, captured.getDonationItems().getFirst().getQuantity());
 
-
     }
+
+    @Test
+    void createMenuCampaignFeijoadaCompleta() {
+        Product arroz = new Product();
+        arroz.setId(1);
+        Product feijao = new Product();
+        feijao.setId(2);
+        Product calabresa = new Product();
+        calabresa.setId(3);
+        Product couve = new Product();
+        couve.setId(4);
+
+        ProductDTO arrozDTO = new ProductDTO();
+        arrozDTO.setId(1);
+        ProductDTO feijaoDTO = new ProductDTO();
+        feijaoDTO.setId(2);
+        ProductDTO calabresaDTO = new ProductDTO();
+        calabresaDTO.setId(3);
+        ProductDTO couveDTO = new ProductDTO();
+        couveDTO.setId(4);
+
+        DonationItemDTO item1 = new DonationItemDTO();
+        item1.setProductDTO(feijaoDTO);
+        item1.setQuantity(2.0);
+        item1.setStatusItem(StatusDonationItemMenuCampaign.FOR_DONATED.getValue());
+
+        DonationItemDTO item2 = new DonationItemDTO();
+        item2.setProductDTO(arrozDTO);
+        item2.setQuantity(3.0);
+        item2.setStatusItem(StatusDonationItemMenuCampaign.FOR_DONATED.getValue());
+
+        DonationItemDTO item3 = new DonationItemDTO();
+        item3.setProductDTO(calabresaDTO);
+        item3.setQuantity(1.5);
+        item3.setStatusItem(StatusDonationItemMenuCampaign.FOR_DONATED.getValue());
+
+        DonationItemDTO item4 = new DonationItemDTO();
+        item4.setProductDTO(couveDTO);
+        item4.setQuantity(1.0);
+        item4.setStatusItem(StatusDonationItemMenuCampaign.FOR_DONATED.getValue());
+
+        MenuCampaignDTO inputDto = new MenuCampaignDTO();
+        inputDto.setName("Feijoada Completa");
+        inputDto.setDonationItemDTOList(List.of(item1, item2, item3, item4));
+
+        DonationItem d1 = new DonationItem();
+        d1.setProduct(feijao);
+        d1.setQuantity(2.0);
+        DonationItem d2 = new DonationItem();
+        d2.setProduct(arroz);
+        d2.setQuantity(3.0);
+        DonationItem d3 = new DonationItem();
+        d3.setProduct(calabresa);
+        d3.setQuantity(1.5);
+        DonationItem d4 = new DonationItem();
+        d4.setProduct(couve);
+        d4.setQuantity(1.0);
+
+        MenuCampaign savedEntity = new MenuCampaign();
+        savedEntity.setMealType("Feijoada Completa");
+        savedEntity.setDonationItems(List.of(d1, d2, d3, d4));
+
+        MenuCampaignDTO expectedOutput = new MenuCampaignDTO();
+        expectedOutput.setName("Feijoada Completa");
+
+        when(productService.findById(1)).thenReturn(arroz);
+        when(productService.findById(2)).thenReturn(feijao);
+        when(productService.findById(3)).thenReturn(calabresa);
+        when(productService.findById(4)).thenReturn(couve);
+
+        when(donationItemMapper.dtoToEntity(item1, feijao)).thenReturn(d1);
+        when(donationItemMapper.dtoToEntity(item2, arroz)).thenReturn(d2);
+        when(donationItemMapper.dtoToEntity(item3, calabresa)).thenReturn(d3);
+        when(donationItemMapper.dtoToEntity(item4, couve)).thenReturn(d4);
+
+        when(menuCampaignRepository.save(any(MenuCampaign.class))).thenReturn(savedEntity);
+        when(menuCampaignMapper.entityToDto(savedEntity)).thenReturn(expectedOutput);
+
+        MenuCampaignDTO result = menuCampaignService.createMenuCampaign(inputDto);
+
+        assertNotNull(result);
+        assertEquals("Feijoada Completa", result.getName());
+
+        ArgumentCaptor<MenuCampaign> campaignCaptor = ArgumentCaptor.forClass(MenuCampaign.class);
+        verify(menuCampaignRepository).save(campaignCaptor.capture());
+        MenuCampaign captured = campaignCaptor.getValue();
+
+        assertEquals("Feijoada Completa", captured.getMealType());
+        assertEquals(4, captured.getDonationItems().size());
+        assertTrue(captured.getDonationItems().stream().anyMatch(i -> i.getProduct().getId().equals(1) && i.getQuantity().equals(3.0)));
+        assertTrue(captured.getDonationItems().stream().anyMatch(i -> i.getProduct().getId().equals(2) && i.getQuantity().equals(2.0)));
+        assertTrue(captured.getDonationItems().stream().anyMatch(i -> i.getProduct().getId().equals(3) && i.getQuantity().equals(1.5)));
+        assertTrue(captured.getDonationItems().stream().anyMatch(i -> i.getProduct().getId().equals(4) && i.getQuantity().equals(1.0)));
+    }
+
 }
