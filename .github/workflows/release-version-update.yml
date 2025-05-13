@@ -65,7 +65,7 @@ jobs:
       - name: Criar Pull Request
         uses: devops-infra/action-pull-request@v0.5.2
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.REPO_TOKEN  }}
           source_branch: release/v${{ steps.next.outputs.next_version }}
           target_branch: main
           title: "chore: bump version to ${{ steps.next.outputs.next_version }}"
