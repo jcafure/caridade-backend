@@ -2,9 +2,11 @@ package dev.caridadems.mapper;
 
 import dev.caridadems.dto.MenuCampaignDTO;
 import dev.caridadems.model.MenuCampaign;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@AllArgsConstructor
 public class MenuCampaignMapper {
 
     private DonationItemMapper donationItemMapper;

@@ -27,7 +27,9 @@ public class DonationItemMapper {
     public List<DonationItemDTO> entityToDto(List<DonationItem> entities) {
         return entities.stream().map(entity -> {
             var dto = new DonationItemDTO();
-            dto.setId(entity.getId());
+            if (entity.getId() != null) {
+                dto.setId(entity.getId());
+            }
             dto.setProductDTO(productMapper.converterEntityToDto(entity.getProduct()));
             dto.setQuantity(entity.getQuantity());
             dto.setStatusItem(entity.getStatusItem().getValue());

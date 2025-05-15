@@ -1,0 +1,1 @@
+ALTER TABLE donation_item DROP CONSTRAINT donation_item_product_id_key;
