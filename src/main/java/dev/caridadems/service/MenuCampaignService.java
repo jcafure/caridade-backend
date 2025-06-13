@@ -29,15 +29,17 @@ public class MenuCampaignService {
     private MenuCampaign buildMenuCampaign(MenuCampaignDTO dto) {
         var menuCampaign = new MenuCampaign();
         menuCampaign.setMealType(dto.getName());
-        menuCampaign.setDonationItems(buildDonationItens(dto));
+        menuCampaign.setDonationItems(buildDonationItens(dto, menuCampaign));
         return menuCampaign;
     }
 
-    private List<DonationItem> buildDonationItens(MenuCampaignDTO dto) {
+    private List<DonationItem> buildDonationItens(MenuCampaignDTO dto, MenuCampaign entity) {
         return dto.getDonationItemDTOList().stream()
                 .map(donationDto -> {
                     var product = productService.findById(donationDto.getProductDTO().getId());
-                    return donationItemMapper.dtoToEntity(donationDto, product);
+                    var donationItem = donationItemMapper.dtoToEntity(donationDto, product);
+                    donationItem.setMenuCampaign(entity);
+                    return donationItem;
                 }).toList();
     }
 }

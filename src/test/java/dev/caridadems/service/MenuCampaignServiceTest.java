@@ -89,7 +89,7 @@ class MenuCampaignServiceTest {
 
     @Test
     void createMenuCampaignFeijoadaCompleta() {
-        Product arroz = new Product();
+        final var arroz = new Product();
         arroz.setId(1);
         Product feijao = new Product();
         feijao.setId(2);
@@ -98,7 +98,7 @@ class MenuCampaignServiceTest {
         Product couve = new Product();
         couve.setId(4);
 
-        ProductDTO arrozDTO = new ProductDTO();
+        final var arrozDTO = new ProductDTO();
         arrozDTO.setId(1);
         ProductDTO feijaoDTO = new ProductDTO();
         feijaoDTO.setId(2);
@@ -107,22 +107,22 @@ class MenuCampaignServiceTest {
         ProductDTO couveDTO = new ProductDTO();
         couveDTO.setId(4);
 
-        DonationItemDTO item1 = new DonationItemDTO();
+        final var item1 = new DonationItemDTO();
         item1.setProductDTO(feijaoDTO);
         item1.setQuantity(2.0);
         item1.setStatusItem(StatusDonationItemMenuCampaign.FOR_DONATED.getValue());
 
-        DonationItemDTO item2 = new DonationItemDTO();
+        final var item2 = new DonationItemDTO();
         item2.setProductDTO(arrozDTO);
         item2.setQuantity(3.0);
         item2.setStatusItem(StatusDonationItemMenuCampaign.FOR_DONATED.getValue());
 
-        DonationItemDTO item3 = new DonationItemDTO();
+        final var item3 = new DonationItemDTO();
         item3.setProductDTO(calabresaDTO);
         item3.setQuantity(1.5);
         item3.setStatusItem(StatusDonationItemMenuCampaign.FOR_DONATED.getValue());
 
-        DonationItemDTO item4 = new DonationItemDTO();
+        final var item4 = new DonationItemDTO();
         item4.setProductDTO(couveDTO);
         item4.setQuantity(1.0);
         item4.setStatusItem(StatusDonationItemMenuCampaign.FOR_DONATED.getValue());
@@ -131,31 +131,33 @@ class MenuCampaignServiceTest {
         inputDto.setName("Feijoada Completa");
         inputDto.setDonationItemDTOList(List.of(item1, item2, item3, item4));
 
-        DonationItem d1 = new DonationItem();
+        final var d1 = new DonationItem();
         d1.setProduct(feijao);
         d1.setQuantity(2.0);
-        DonationItem d2 = new DonationItem();
+
+        final var d2 = new DonationItem();
         d2.setProduct(arroz);
         d2.setQuantity(3.0);
-        DonationItem d3 = new DonationItem();
+
+        final var d3 = new DonationItem();
         d3.setProduct(calabresa);
         d3.setQuantity(1.5);
-        DonationItem d4 = new DonationItem();
+
+        final var d4 = new DonationItem();
         d4.setProduct(couve);
         d4.setQuantity(1.0);
 
-        MenuCampaign savedEntity = new MenuCampaign();
+        final var savedEntity = new MenuCampaign();
         savedEntity.setMealType("Feijoada Completa");
         savedEntity.setDonationItems(List.of(d1, d2, d3, d4));
 
-        MenuCampaignDTO expectedOutput = new MenuCampaignDTO();
+        final var expectedOutput = new MenuCampaignDTO();
         expectedOutput.setName("Feijoada Completa");
 
         when(productService.findById(1)).thenReturn(arroz);
         when(productService.findById(2)).thenReturn(feijao);
         when(productService.findById(3)).thenReturn(calabresa);
         when(productService.findById(4)).thenReturn(couve);
-
         when(donationItemMapper.dtoToEntity(item1, feijao)).thenReturn(d1);
         when(donationItemMapper.dtoToEntity(item2, arroz)).thenReturn(d2);
         when(donationItemMapper.dtoToEntity(item3, calabresa)).thenReturn(d3);
@@ -164,7 +166,7 @@ class MenuCampaignServiceTest {
         when(menuCampaignRepository.save(any(MenuCampaign.class))).thenReturn(savedEntity);
         when(menuCampaignMapper.entityToDto(savedEntity)).thenReturn(expectedOutput);
 
-        MenuCampaignDTO result = menuCampaignService.createMenuCampaign(inputDto);
+        final var result = menuCampaignService.createMenuCampaign(inputDto);
 
         assertNotNull(result);
         assertEquals("Feijoada Completa", result.getName());
