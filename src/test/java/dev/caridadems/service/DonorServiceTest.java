@@ -2,7 +2,7 @@ package dev.caridadems.service;
 
 import dev.caridadems.dto.AddressDTO;
 import dev.caridadems.dto.CityDTO;
-import dev.caridadems.dto.DonorRegisterDto;
+import dev.caridadems.dto.DonorRegisterDTO;
 import dev.caridadems.mapper.AddressMapper;
 import dev.caridadems.mapper.DonorMapper;
 import dev.caridadems.model.Address;
@@ -41,7 +41,7 @@ class DonorServiceTest {
 
     @Test
     void newDonor() {
-        var dto = new DonorRegisterDto();
+        var dto = new DonorRegisterDTO();
         dto.setName("Jaime");
         dto.setEmail("jaime@exemplo.com");
         dto.setPhone("67999999999");

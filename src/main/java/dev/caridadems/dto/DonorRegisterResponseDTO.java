@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class DonorRegisterResponseDto {
+public class DonorRegisterResponseDTO {
 
     private boolean success;
     private Integer id;
