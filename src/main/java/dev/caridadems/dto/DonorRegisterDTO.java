@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class DonorRegisterDto {
+public class DonorRegisterDTO {
 
     private String name;
     private String email;

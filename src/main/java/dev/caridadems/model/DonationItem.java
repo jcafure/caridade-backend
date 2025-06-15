@@ -19,7 +19,8 @@ public class DonationItem extends BaseEntity{
     @JoinColumn(name = "menu_campaign_id")
     private MenuCampaign menuCampaign;
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "product_id")
     private Product product;
 
     @Enumerated(EnumType.ORDINAL)

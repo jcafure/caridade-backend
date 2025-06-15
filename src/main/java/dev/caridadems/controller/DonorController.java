@@ -1,7 +1,7 @@
 package dev.caridadems.controller;
 
-import dev.caridadems.dto.DonorRegisterDto;
-import dev.caridadems.dto.DonorRegisterResponseDto;
+import dev.caridadems.dto.DonorRegisterDTO;
+import dev.caridadems.dto.DonorRegisterResponseDTO;
 import dev.caridadems.service.DonorService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,7 @@ public class DonorController {
     private final DonorService donorService;
 
     @PostMapping(value = "/new-donor")
-    public ResponseEntity<DonorRegisterResponseDto> newDonor(@RequestBody DonorRegisterDto donorRegisterDto) {
+    public ResponseEntity<DonorRegisterResponseDTO> newDonor(@RequestBody DonorRegisterDTO donorRegisterDto) {
         return ResponseEntity.ok(donorService.newDonor(donorRegisterDto));
     }
 }

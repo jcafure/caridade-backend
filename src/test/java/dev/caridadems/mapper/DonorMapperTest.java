@@ -1,6 +1,6 @@
 package dev.caridadems.mapper;
 
-import dev.caridadems.dto.DonorRegisterDto;
+import dev.caridadems.dto.DonorRegisterDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -21,7 +21,7 @@ class DonorMapperTest {
 
     @Test
     void dtoToEntity() {
-        final var dto = new DonorRegisterDto();
+        final var dto = new DonorRegisterDTO();
         dto.setEmail("admin@caridade.com");
         dto.setName("admin");
         dto.setPhone("(67) 99999-9999");

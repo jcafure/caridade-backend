@@ -12,4 +12,16 @@ public enum StatusDonationItemMenuCampaign {
 
     private final Integer id;
     private final String value;
+
+    public static StatusDonationItemMenuCampaign toEnum (String value) {
+        if(value == null ){
+            return null;
+        }
+        for (var statusMenu : StatusDonationItemMenuCampaign.values()) {
+            if (value.equals(statusMenu.getValue())){
+                return statusMenu;
+            }
+        }
+        return null;
+    }
 }
