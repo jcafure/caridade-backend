@@ -38,17 +38,30 @@ jobs:
         id: next
         run: |
           CURRENT="${{ steps.version.outputs.current_version }}"
+          echo "Versão atual: $CURRENT"
+
+          CURRENT=${CURRENT:-0.0.0}
+
           IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT"
+
           case "${{ github.event.inputs.tipoVersao }}" in
             major)
-              MAJOR=$((MAJOR+1)); MINOR=0; PATCH=0 ;;
+              MAJOR=$((MAJOR + 1))
+              MINOR=0
+              PATCH=0
+              ;;
             minor)
-              MINOR=$((MINOR+1)); PATCH=0 ;;
+              MINOR=$((MINOR + 1))
+              PATCH=0
+              ;;
             patch)
-              PATCH=$((PATCH+1)) ;;
+              PATCH=$((PATCH + 1))
+              ;;
           esac
+
           NEW_VERSION="$MAJOR.$MINOR.$PATCH"
           echo "next_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "Nova versão gerada: $NEW_VERSION"
 
       - name: Atualizar versão no pom.xml
         run: |
@@ -65,7 +78,7 @@ jobs:
       - name: Criar Pull Request
         uses: devops-infra/action-pull-request@v0.5.2
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.REPO_TOKEN  }}
           source_branch: release/v${{ steps.next.outputs.next_version }}
           target_branch: main
           title: "chore: bump version to ${{ steps.next.outputs.next_version }}"
