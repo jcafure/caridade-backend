@@ -1,8 +1,8 @@
 package dev.caridadems.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.caridadems.dto.DonorRegisterDto;
-import dev.caridadems.dto.DonorRegisterResponseDto;
+import dev.caridadems.dto.DonorRegisterDTO;
+import dev.caridadems.dto.DonorRegisterResponseDTO;
 import dev.caridadems.service.DonorService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,13 +41,13 @@ class DonorControllerTest {
 
     @Test
     void testShouldReturnCreatedDonor() throws Exception {
-        final var dto = new DonorRegisterDto();
+        final var dto = new DonorRegisterDTO();
         dto.setName("Jaime");
         dto.setEmail("jaime@caridade.com");
         dto.setPhone("(67) 99999-9999");
         dto.setExternalId(123);
 
-        final var responseDto = new DonorRegisterResponseDto(true, 1, "Jaime");
+        final var responseDto = new DonorRegisterResponseDTO(true, 1, "Jaime");
 
         Mockito.when(donorService.newDonor(dto)).thenReturn(responseDto);
         mockMvc.perform(post("/donors/new-donor")
