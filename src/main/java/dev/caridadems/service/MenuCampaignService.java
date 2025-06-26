@@ -5,9 +5,12 @@ import dev.caridadems.mapper.DonationItemMapper;
 import dev.caridadems.mapper.MenuCampaignMapper;
 import dev.caridadems.model.DonationItem;
 import dev.caridadems.model.MenuCampaign;
+import dev.caridadems.model.Product;
 import dev.caridadems.repository.MenuCampaignRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,6 +27,17 @@ public class MenuCampaignService {
     @Transactional
     public MenuCampaignDTO createMenuCampaign(MenuCampaignDTO dto) {
         return menuCampaignMapper.entityToDto(menuCampaignRepository.save(buildMenuCampaign(dto)));
+    }
+
+    public Page<MenuCampaignDTO> findAll(String mealType, Pageable pageable) {
+        Page<MenuCampaign> menus;
+
+        if(mealType != null && !mealType.isBlank()){
+            menus = menuCampaignRepository.findByMealTypeContainingIgnoreCase(mealType, pageable);
+        }else{
+            menus = menuCampaignRepository.findAll(pageable);
+        }
+        return menus.map(menuCampaignMapper::entityToDto);
     }
 
     private MenuCampaign buildMenuCampaign(MenuCampaignDTO dto) {

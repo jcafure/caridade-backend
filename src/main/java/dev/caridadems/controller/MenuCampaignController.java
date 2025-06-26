@@ -3,11 +3,10 @@ package dev.caridadems.controller;
 import dev.caridadems.dto.MenuCampaignDTO;
 import dev.caridadems.service.MenuCampaignService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/donation-menus")
@@ -19,5 +18,11 @@ public class MenuCampaignController {
     @PostMapping(value = "/new-menu-campaign")
     public ResponseEntity<MenuCampaignDTO> newMenuCampaign(@RequestBody MenuCampaignDTO menuCampaignDTO) {
         return ResponseEntity.ok(menuCampaignService.createMenuCampaign(menuCampaignDTO));
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<Page<MenuCampaignDTO>> getAllMenus(@RequestParam(required = false) String mealType,
+                                                             Pageable pageable) {
+        return ResponseEntity.ok(menuCampaignService.findAll(mealType, pageable));
     }
 }
