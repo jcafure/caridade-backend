@@ -10,12 +10,13 @@ import dev.caridadems.model.DonationItem;
 import dev.caridadems.model.MenuCampaign;
 import dev.caridadems.model.Product;
 import dev.caridadems.repository.MenuCampaignRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 
@@ -181,6 +182,40 @@ class MenuCampaignServiceTest {
         assertTrue(captured.getDonationItems().stream().anyMatch(i -> i.getProduct().getId().equals(2) && i.getQuantity().equals(2.0)));
         assertTrue(captured.getDonationItems().stream().anyMatch(i -> i.getProduct().getId().equals(3) && i.getQuantity().equals(1.5)));
         assertTrue(captured.getDonationItems().stream().anyMatch(i -> i.getProduct().getId().equals(4) && i.getQuantity().equals(1.0)));
+    }
+
+    @Test
+    void testFindByMealTypeContainingIgnoreCase() {
+        final var menuName = "Feijoada";
+        final var pageable = PageRequest.of(0,10);
+        final var menuCampaignEntity = new MenuCampaign();
+        final var menuCampaignDto = new MenuCampaignDTO();
+        Page<MenuCampaign> page = new PageImpl<>(List.of(menuCampaignEntity));
+
+        Mockito.when(menuCampaignRepository.findByMealTypeContainingIgnoreCase(menuName, pageable)).thenReturn(page);
+        Mockito.when(menuCampaignMapper.entityToDto(menuCampaignEntity)).thenReturn(menuCampaignDto);
+
+        Page<MenuCampaignDTO> pages = menuCampaignService.findAll(menuName, pageable);
+
+        Assertions.assertEquals(1, pages.getTotalElements());
+        Assertions.assertEquals(menuCampaignDto, pages.getContent().getFirst());
+    }
+
+    @Test
+    void testFindAll() {
+        final var menuCampaignEntity = new MenuCampaign();
+        final var menuCampaignDto = new MenuCampaignDTO();
+        final var page = new PageImpl<>(List.of(menuCampaignEntity));
+        final var pageable = PageRequest.of(0,10);
+
+        Mockito.when(menuCampaignRepository.findAll(pageable)).thenReturn(page);
+        Mockito.when(menuCampaignMapper.entityToDto(menuCampaignEntity)).thenReturn(menuCampaignDto);
+        Mockito.when(menuCampaignMapper.entityToDto(menuCampaignEntity)).thenReturn(menuCampaignDto);
+
+        Page<MenuCampaignDTO> pages = menuCampaignService.findAll(null, pageable);
+
+        Assertions.assertEquals(1, pages.getTotalElements());
+        Assertions.assertEquals(menuCampaignDto, pages.getContent().getFirst());
     }
 
 }
