@@ -5,7 +5,6 @@ import dev.caridadems.mapper.DonationItemMapper;
 import dev.caridadems.mapper.MenuCampaignMapper;
 import dev.caridadems.model.DonationItem;
 import dev.caridadems.model.MenuCampaign;
-import dev.caridadems.model.Product;
 import dev.caridadems.repository.MenuCampaignRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
