@@ -3,18 +3,20 @@ package dev.caridadems.mapper;
 import dev.caridadems.domain.StatusDonationItemMenuCampaign;
 import dev.caridadems.dto.DonationItemDTO;
 import dev.caridadems.model.DonationItem;
+import dev.caridadems.model.MenuCampaign;
 import dev.caridadems.model.Product;
+import dev.caridadems.service.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor
 public class DonationItemMapper {
 
     private final ProductMapper productMapper;
+    private final ProductService productService;
 
     public DonationItem dtoToEntity(DonationItemDTO dto, Product product) {
         var donationItem = new DonationItem();
@@ -35,5 +37,21 @@ public class DonationItemMapper {
             dto.setStatusItem(entity.getStatusItem().getValue());
             return dto;
         }).toList();
+    }
+
+    public List<DonationItem> convertDtoListToEntity(List<DonationItemDTO> donationItemDTOS,
+                                                     MenuCampaign menuCampaign) {
+        if (donationItemDTOS == null){
+            return List.of();
+        }
+
+        return donationItemDTOS.stream()
+                .map(donationDto -> {
+
+                    var product = productService.findById(donationDto.getProductDTO().getId());
+                    var donationItem = dtoToEntity(donationDto, product);
+                    donationItem.setMenuCampaign(menuCampaign);
+                    return donationItem;
+                }).toList();
     }
 }

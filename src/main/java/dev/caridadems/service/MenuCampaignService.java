@@ -1,9 +1,8 @@
 package dev.caridadems.service;
 
 import dev.caridadems.dto.MenuCampaignDTO;
-import dev.caridadems.mapper.DonationItemMapper;
+import dev.caridadems.exception.ObjectNotFoundException;
 import dev.caridadems.mapper.MenuCampaignMapper;
-import dev.caridadems.model.DonationItem;
 import dev.caridadems.model.MenuCampaign;
 import dev.caridadems.repository.MenuCampaignRepository;
 import jakarta.transaction.Transactional;
@@ -12,20 +11,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 @Service
 @AllArgsConstructor
 public class MenuCampaignService {
 
-    private final ProductService productService;
     private final MenuCampaignRepository menuCampaignRepository;
-    private final DonationItemMapper donationItemMapper;
     private final MenuCampaignMapper menuCampaignMapper;
 
     @Transactional
     public MenuCampaignDTO createMenuCampaign(MenuCampaignDTO dto) {
-        return menuCampaignMapper.entityToDto(menuCampaignRepository.save(buildMenuCampaign(dto)));
+        return menuCampaignMapper.entityToDto(menuCampaignRepository.save(menuCampaignMapper.convertDtoToEntity(dto)));
     }
 
     public Page<MenuCampaignDTO> findAll(String mealType, Pageable pageable) {
@@ -39,20 +35,12 @@ public class MenuCampaignService {
         return menus.map(menuCampaignMapper::entityToDto);
     }
 
-    private MenuCampaign buildMenuCampaign(MenuCampaignDTO dto) {
-        var menuCampaign = new MenuCampaign();
-        menuCampaign.setMealType(dto.getName());
-        menuCampaign.setDonationItems(buildDonationItens(dto, menuCampaign));
-        return menuCampaign;
-    }
+    @Transactional
+    public MenuCampaignDTO updateMenu(MenuCampaignDTO menuCampaignDTO) {
+        if (!menuCampaignRepository.existsById(menuCampaignDTO.getId())){
+            throw new ObjectNotFoundException("Menu com id: " + menuCampaignDTO.getId() + " não encontrado");
+        }
+        return null;
 
-    private List<DonationItem> buildDonationItens(MenuCampaignDTO dto, MenuCampaign entity) {
-        return dto.getDonationItemDTOList().stream()
-                .map(donationDto -> {
-                    var product = productService.findById(donationDto.getProductDTO().getId());
-                    var donationItem = donationItemMapper.dtoToEntity(donationDto, product);
-                    donationItem.setMenuCampaign(entity);
-                    return donationItem;
-                }).toList();
     }
 }

@@ -4,7 +4,6 @@ import dev.caridadems.domain.StatusDonationItemMenuCampaign;
 import dev.caridadems.dto.DonationItemDTO;
 import dev.caridadems.dto.MenuCampaignDTO;
 import dev.caridadems.dto.ProductDTO;
-import dev.caridadems.mapper.DonationItemMapper;
 import dev.caridadems.mapper.MenuCampaignMapper;
 import dev.caridadems.model.DonationItem;
 import dev.caridadems.model.MenuCampaign;
@@ -28,11 +27,7 @@ import static org.mockito.Mockito.when;
 class MenuCampaignServiceTest {
 
     @Mock
-    private ProductService productService;
-    @Mock
     private MenuCampaignRepository menuCampaignRepository;
-    @Mock
-    private DonationItemMapper donationItemMapper;
     @Mock
     private MenuCampaignMapper menuCampaignMapper;
     @InjectMocks
@@ -69,10 +64,9 @@ class MenuCampaignServiceTest {
         MenuCampaignDTO expectedOutput = new MenuCampaignDTO();
         expectedOutput.setName("Almoço");
 
-        when(productService.findById(1)).thenReturn(product);
-        when(donationItemMapper.dtoToEntity(itemDTO, product)).thenReturn(donationItem);
         when(menuCampaignRepository.save(any(MenuCampaign.class))).thenReturn(savedEntity);
         when(menuCampaignMapper.entityToDto(savedEntity)).thenReturn(expectedOutput);
+        when(menuCampaignMapper.convertDtoToEntity(inputDto)).thenReturn(savedEntity);
 
         MenuCampaignDTO result = menuCampaignService.createMenuCampaign(inputDto);
 
@@ -155,17 +149,10 @@ class MenuCampaignServiceTest {
         final var expectedOutput = new MenuCampaignDTO();
         expectedOutput.setName("Feijoada Completa");
 
-        when(productService.findById(1)).thenReturn(arroz);
-        when(productService.findById(2)).thenReturn(feijao);
-        when(productService.findById(3)).thenReturn(calabresa);
-        when(productService.findById(4)).thenReturn(couve);
-        when(donationItemMapper.dtoToEntity(item1, feijao)).thenReturn(d1);
-        when(donationItemMapper.dtoToEntity(item2, arroz)).thenReturn(d2);
-        when(donationItemMapper.dtoToEntity(item3, calabresa)).thenReturn(d3);
-        when(donationItemMapper.dtoToEntity(item4, couve)).thenReturn(d4);
 
         when(menuCampaignRepository.save(any(MenuCampaign.class))).thenReturn(savedEntity);
         when(menuCampaignMapper.entityToDto(savedEntity)).thenReturn(expectedOutput);
+        when(menuCampaignMapper.convertDtoToEntity(inputDto)).thenReturn(savedEntity);
 
         final var result = menuCampaignService.createMenuCampaign(inputDto);
 

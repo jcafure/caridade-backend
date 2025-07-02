@@ -1,6 +1,7 @@
 package dev.caridadems.mapper;
 
 import dev.caridadems.dto.DonationItemDTO;
+import dev.caridadems.dto.MenuCampaignDTO;
 import dev.caridadems.dto.ProductDTO;
 import dev.caridadems.model.DonationItem;
 import dev.caridadems.model.MenuCampaign;
@@ -14,6 +15,9 @@ import org.mockito.MockitoAnnotations;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class MenuCampaignMapperTest {
@@ -109,6 +113,36 @@ class MenuCampaignMapperTest {
 
         assertEquals("Feijão", dto2.getProductDTO().getName());
         assertEquals(5.0, dto2.getQuantity());
+    }
+
+    @Test
+    void convertDtoToEntity_shouldMapCorrectly() {
+        final var dto = new MenuCampaignDTO();
+        final var productDTO = new ProductDTO();
+        final var itemDTO = new DonationItemDTO();
+
+        dto.setName("Almoço");
+        productDTO.setId(1);
+        itemDTO.setProductDTO(productDTO);
+        itemDTO.setQuantity(2.0);
+        itemDTO.setStatusItem("Para doar");
+
+        dto.setDonationItemDTOList(List.of(itemDTO));
+
+        final var mockedItem = new DonationItem();
+        mockedItem.setQuantity(2.0);
+
+        when(donationItemMapper.convertDtoListToEntity(anyList(), any(MenuCampaign.class)))
+                .thenReturn(List.of(mockedItem));
+
+        final var result = menuCampaignMapper.convertDtoToEntity(dto);
+
+        assertNotNull(result);
+        assertEquals("Almoço", result.getMealType());
+        assertEquals(1, result.getDonationItems().size());
+        assertEquals(2.0, result.getDonationItems().getFirst().getQuantity());
+
+        verify(donationItemMapper).convertDtoListToEntity(dto.getDonationItemDTOList(), result);
     }
 
 }

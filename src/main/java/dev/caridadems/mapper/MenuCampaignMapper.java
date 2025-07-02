@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class MenuCampaignMapper {
 
-    private DonationItemMapper donationItemMapper;
+    private final DonationItemMapper donationItemMapper;
 
     public MenuCampaignDTO entityToDto(MenuCampaign entity){
         var dto = new MenuCampaignDTO();
@@ -18,5 +18,12 @@ public class MenuCampaignMapper {
         dto.setDonationItemDTOList(donationItemMapper.entityToDto(entity.getDonationItems()));
 
         return dto;
+    }
+
+    public MenuCampaign convertDtoToEntity(MenuCampaignDTO dto) {
+        var menuCampaign = new MenuCampaign();
+        menuCampaign.setMealType(dto.getName());
+        menuCampaign.setDonationItems(donationItemMapper.convertDtoListToEntity(dto.getDonationItemDTOList(), menuCampaign));
+        return menuCampaign;
     }
 }

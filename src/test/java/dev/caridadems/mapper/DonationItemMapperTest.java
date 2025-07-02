@@ -6,7 +6,9 @@ import dev.caridadems.domain.UnitOfMeasure;
 import dev.caridadems.dto.DonationItemDTO;
 import dev.caridadems.dto.ProductDTO;
 import dev.caridadems.model.DonationItem;
+import dev.caridadems.model.MenuCampaign;
 import dev.caridadems.model.Product;
+import dev.caridadems.service.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -26,6 +28,9 @@ class DonationItemMapperTest {
 
     @Mock
     private ProductMapper productMapper;
+
+    @Mock
+    private ProductService productService;
 
     @BeforeEach
     void setUp() {
@@ -89,5 +94,34 @@ class DonationItemMapperTest {
         assertEquals(result.getFirst().getStatusItem(), StatusDonationItemMenuCampaign.PARTIALLY_DONATED.getValue());
         assertEquals(result.getFirst().getQuantity(), item.getQuantity());
         assertNotNull(result.getFirst().getId());
+    }
+
+    @Test
+    void testConvertDtoListToEntity_shouldReturnDonationItemList() {
+        final var productDTO = new ProductDTO();
+        final var donationItemDTO = new DonationItemDTO();
+        final var menuCampaign = new MenuCampaign();
+        final var mockProduct = new Product();
+
+        mockProduct.setId(1);
+        mockProduct.setName("Arroz");
+
+        productDTO.setId(1);
+        donationItemDTO.setProductDTO(productDTO);
+        donationItemDTO.setQuantity(10.0);
+        donationItemDTO.setStatusItem("Para doar");
+        List<DonationItemDTO> dtoList = List.of(donationItemDTO);
+        menuCampaign.setId(100);
+
+        when(productService.findById(1)).thenReturn(mockProduct);
+
+        List<DonationItem> result = donationItemMapper.convertDtoListToEntity(dtoList, menuCampaign);
+
+        assertEquals(1, result.size());
+        DonationItem item = result.getFirst();
+
+        assertEquals(10.0, item.getQuantity());
+        assertEquals(menuCampaign, item.getMenuCampaign());
+        assertEquals(mockProduct, item.getProduct());
     }
 }
