@@ -47,7 +47,6 @@ public class DonationItemMapper {
 
         return donationItemDTOS.stream()
                 .map(donationDto -> {
-
                     var product = productService.findById(donationDto.getProductDTO().getId());
                     var donationItem = dtoToEntity(donationDto, product);
                     donationItem.setMenuCampaign(menuCampaign);
