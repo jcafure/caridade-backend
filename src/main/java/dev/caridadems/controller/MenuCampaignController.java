@@ -25,4 +25,10 @@ public class MenuCampaignController {
                                                              Pageable pageable) {
         return ResponseEntity.ok(menuCampaignService.findAll(mealType, pageable));
     }
+
+    @PutMapping("update-menus")
+    public ResponseEntity<MenuCampaignDTO> update(@RequestBody MenuCampaignDTO menuCampaignDTO) {
+
+        return null;
+    }
 }

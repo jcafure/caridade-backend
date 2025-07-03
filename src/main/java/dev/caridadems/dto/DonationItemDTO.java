@@ -14,7 +14,7 @@ public class DonationItemDTO implements Serializable {
 
     private Integer id;
 
-    @JsonProperty("productDTO")
+    @JsonProperty("productDto")
     private ProductDTO productDTO;
     private String statusItem;
     private Double quantity;
