@@ -40,7 +40,6 @@ public class MenuCampaignService {
         if (!menuCampaignRepository.existsById(menuCampaignDTO.getId())){
             throw new ObjectNotFoundException("Menu com id: " + menuCampaignDTO.getId() + " não encontrado");
         }
-        return null;
-
+        return menuCampaignMapper.entityToDto(menuCampaignRepository.save(menuCampaignMapper.convertDtoToEntity(menuCampaignDTO)));
     }
 }
