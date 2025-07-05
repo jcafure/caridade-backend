@@ -26,9 +26,8 @@ public class MenuCampaignController {
         return ResponseEntity.ok(menuCampaignService.findAll(mealType, pageable));
     }
 
-    @PutMapping("update-menus")
+    @PutMapping("/update-menus")
     public ResponseEntity<MenuCampaignDTO> update(@RequestBody MenuCampaignDTO menuCampaignDTO) {
-
         return ResponseEntity.ok(menuCampaignService.updateMenu(menuCampaignDTO));
     }
 }

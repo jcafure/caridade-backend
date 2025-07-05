@@ -4,6 +4,7 @@ import dev.caridadems.domain.StatusDonationItemMenuCampaign;
 import dev.caridadems.dto.DonationItemDTO;
 import dev.caridadems.dto.MenuCampaignDTO;
 import dev.caridadems.dto.ProductDTO;
+import dev.caridadems.exception.ObjectNotFoundException;
 import dev.caridadems.mapper.MenuCampaignMapper;
 import dev.caridadems.model.DonationItem;
 import dev.caridadems.model.MenuCampaign;
@@ -21,8 +22,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class MenuCampaignServiceTest {
 
@@ -205,4 +205,43 @@ class MenuCampaignServiceTest {
         Assertions.assertEquals(menuCampaignDto, pages.getContent().getFirst());
     }
 
+    @Test
+    void shouldUpdateMenuCampaignSuccessfully() {
+        final var dto = new MenuCampaignDTO();
+        final var menuEntity = new MenuCampaign();
+        dto.setId(1);
+        dto.setName("Feijoada Solidária");
+        menuEntity.setId(1);
+        menuEntity.setMealType("Feijoada Solidária");
+
+        when(menuCampaignRepository.existsById(1)).thenReturn(true);
+        when(menuCampaignMapper.convertDtoToEntity(dto)).thenReturn(menuEntity);
+        when(menuCampaignRepository.save(menuEntity)).thenReturn(menuEntity);
+        when(menuCampaignMapper.entityToDto(menuEntity)).thenReturn(dto);
+
+        final var result = menuCampaignService.updateMenu(dto);
+
+        assertNotNull(result);
+        assertEquals(dto.getId(), result.getId());
+        assertEquals(dto.getName(), result.getName());
+
+        verify(menuCampaignRepository).existsById(1);
+        verify(menuCampaignRepository).save(menuEntity);
+        verify(menuCampaignMapper).convertDtoToEntity(dto);
+        verify(menuCampaignMapper).entityToDto(menuEntity);
+    }
+
+    @Test
+    void shouldThrowExceptionWhenMenuNotFound() {
+        final var dto = new MenuCampaignDTO();
+        dto.setId(999);
+
+        when(menuCampaignRepository.existsById(999)).thenReturn(false);
+
+        assertThrows(ObjectNotFoundException.class, () -> menuCampaignService.updateMenu(dto));
+
+        verify(menuCampaignRepository).existsById(999);
+        verifyNoMoreInteractions(menuCampaignRepository);
+        verifyNoInteractions(menuCampaignMapper);
+    }
 }

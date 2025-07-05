@@ -20,6 +20,9 @@ public class DonationItemMapper {
 
     public DonationItem dtoToEntity(DonationItemDTO dto, Product product) {
         var donationItem = new DonationItem();
+        if (dto.getId() != null) {
+            donationItem.setId(dto.getId());
+        }
         donationItem.setProduct(product);
         donationItem.setStatusItem(StatusDonationItemMenuCampaign.toEnum(dto.getStatusItem()));
         donationItem.setQuantity(dto.getQuantity());

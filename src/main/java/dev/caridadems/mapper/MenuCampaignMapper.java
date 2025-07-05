@@ -22,6 +22,9 @@ public class MenuCampaignMapper {
 
     public MenuCampaign convertDtoToEntity(MenuCampaignDTO dto) {
         var menuCampaign = new MenuCampaign();
+        if (dto.getId() != null) {
+            menuCampaign.setId(dto.getId());
+        }
         menuCampaign.setMealType(dto.getName());
         menuCampaign.setDonationItems(donationItemMapper.convertDtoListToEntity(dto.getDonationItemDTOList(), menuCampaign));
         return menuCampaign;

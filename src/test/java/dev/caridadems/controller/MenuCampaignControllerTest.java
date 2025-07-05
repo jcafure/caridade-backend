@@ -21,7 +21,11 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -50,7 +54,7 @@ class MenuCampaignControllerTest {
 
         Page<MenuCampaignDTO> page = new PageImpl<>(List.of(dto));
 
-        Mockito.when(menuCampaignService.findAll(Mockito.isNull(), Mockito.any(Pageable.class)))
+        when(menuCampaignService.findAll(Mockito.isNull(), any(Pageable.class)))
                 .thenReturn(page);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/donation-menus/all")
@@ -68,7 +72,7 @@ class MenuCampaignControllerTest {
         responseDto.setName("Feijoada");
         requestDto.setName("Feijoada");
 
-        Mockito.when(menuCampaignService.createMenuCampaign(Mockito.any()))
+        when(menuCampaignService.createMenuCampaign(any()))
                 .thenReturn(responseDto);
 
         mockMvc.perform(post("/donation-menus/new-menu-campaign")
@@ -77,4 +81,22 @@ class MenuCampaignControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Feijoada"));
     }
+
+    @Test
+    void shouldUpdateMenuCampaignSuccessfully() throws Exception {
+        final var inputDto = new MenuCampaignDTO();
+        inputDto.setId(6);
+        inputDto.setName("Feijoada Solidária");
+
+        when(menuCampaignService.updateMenu(any(MenuCampaignDTO.class))).thenReturn(inputDto);
+        mockMvc.perform(put("/donation-menus/update-menus")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(inputDto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(6))
+                .andExpect(jsonPath("$.name").value("Feijoada Solidária"));
+
+        verify(menuCampaignService).updateMenu(any(MenuCampaignDTO.class));
+    }
+
 }
