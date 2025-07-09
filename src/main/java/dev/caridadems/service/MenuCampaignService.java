@@ -4,6 +4,7 @@ import dev.caridadems.dto.MenuCampaignDTO;
 import dev.caridadems.exception.ObjectNotFoundException;
 import dev.caridadems.mapper.MenuCampaignMapper;
 import dev.caridadems.model.MenuCampaign;
+import dev.caridadems.repository.DonationItemRepository;
 import dev.caridadems.repository.MenuCampaignRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -18,6 +19,7 @@ public class MenuCampaignService {
 
     private final MenuCampaignRepository menuCampaignRepository;
     private final MenuCampaignMapper menuCampaignMapper;
+    private final DonationItemRepository donationItemRepository;
 
     @Transactional
     public MenuCampaignDTO createMenuCampaign(MenuCampaignDTO dto) {
@@ -41,5 +43,9 @@ public class MenuCampaignService {
             throw new ObjectNotFoundException("Menu com id: " + menuCampaignDTO.getId() + " não encontrado");
         }
         return menuCampaignMapper.entityToDto(menuCampaignRepository.save(menuCampaignMapper.convertDtoToEntity(menuCampaignDTO)));
+    }
+
+    public void delete(Integer id) {
+        menuCampaignRepository.deleteById(id);
     }
 }

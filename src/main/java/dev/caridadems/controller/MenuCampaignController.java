@@ -30,4 +30,10 @@ public class MenuCampaignController {
     public ResponseEntity<MenuCampaignDTO> update(@RequestBody MenuCampaignDTO menuCampaignDTO) {
         return ResponseEntity.ok(menuCampaignService.updateMenu(menuCampaignDTO));
     }
+
+    @DeleteMapping(value = "/delete-menu/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Integer id) {
+        menuCampaignService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 }
