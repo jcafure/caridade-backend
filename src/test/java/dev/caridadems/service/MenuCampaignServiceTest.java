@@ -244,4 +244,13 @@ class MenuCampaignServiceTest {
         verifyNoMoreInteractions(menuCampaignRepository);
         verifyNoInteractions(menuCampaignMapper);
     }
+
+    @Test
+    void testDeleteMenuSuccessfully() {
+        final var menuId = 1;
+
+        menuCampaignService.delete(menuId);
+
+        Mockito.verify(menuCampaignRepository).deleteById(menuId);
+    }
 }

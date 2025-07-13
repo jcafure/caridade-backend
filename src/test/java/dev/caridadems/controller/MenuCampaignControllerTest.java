@@ -24,8 +24,7 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -98,5 +97,15 @@ class MenuCampaignControllerTest {
 
         verify(menuCampaignService).updateMenu(any(MenuCampaignDTO.class));
     }
+
+    @Test
+    void testDeleteMenuSuccessfully() throws Exception {
+        final var menuId = 1;
+        mockMvc.perform(delete("/donation-menus/delete-menu/{id}", menuId))
+                .andExpect(status().isNoContent());
+
+        verify(menuCampaignService).delete(menuId);
+    }
+
 
 }
