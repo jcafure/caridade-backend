@@ -19,7 +19,6 @@ public class MenuCampaignService {
 
     private final MenuCampaignRepository menuCampaignRepository;
     private final MenuCampaignMapper menuCampaignMapper;
-    private final DonationItemRepository donationItemRepository;
 
     @Transactional
     public MenuCampaignDTO createMenuCampaign(MenuCampaignDTO dto) {
