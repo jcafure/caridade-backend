@@ -36,4 +36,9 @@ public class MenuCampaignController {
         menuCampaignService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/find-by-id/{id}")
+    public ResponseEntity<MenuCampaignDTO> findById(@PathVariable Integer id) {
+        return ResponseEntity.ok(menuCampaignService.findById(id));
+    }
 }

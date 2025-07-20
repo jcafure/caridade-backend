@@ -11,6 +11,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 
 @Service
 @AllArgsConstructor
@@ -45,5 +47,10 @@ public class MenuCampaignService {
 
     public void delete(Integer id) {
         menuCampaignRepository.deleteById(id);
+    }
+
+    public MenuCampaignDTO findById(Integer id) {
+        Optional<MenuCampaign> menuCampaign = menuCampaignRepository.findById(id);
+        return menuCampaignMapper.entityToDto(menuCampaign.get());
     }
 }
