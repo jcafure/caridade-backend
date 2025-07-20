@@ -107,5 +107,23 @@ class MenuCampaignControllerTest {
         verify(menuCampaignService).delete(menuId);
     }
 
+    @Test
+    void shouldReturnMenuCampaignDTOWhenIdExists() throws Exception {
+        final var id = 1;
+        final var dto = new MenuCampaignDTO();
+        dto.setId(id);
+        dto.setName("carreteiro");
+
+        when(menuCampaignService.findById(id)).thenReturn(dto);
+
+        mockMvc.perform(get("/donation-menus/find-by-id/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(id))
+                .andExpect(jsonPath("$.name").value("carreteiro"));
+
+        verify(menuCampaignService).findById(id);
+    }
+
 
 }

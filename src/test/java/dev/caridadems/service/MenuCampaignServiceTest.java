@@ -19,6 +19,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -252,5 +253,29 @@ class MenuCampaignServiceTest {
         menuCampaignService.delete(menuId);
 
         Mockito.verify(menuCampaignRepository).deleteById(menuId);
+    }
+
+    @Test
+    void shouldReturnMenuCampaignDTOWhenIdExists() {
+        Integer id = 1;
+        final var entity = new MenuCampaign();
+        entity.setId(id);
+        entity.setMealType("carreteiro");
+
+        final var dto = new MenuCampaignDTO();
+        dto.setId(id);
+        dto.setName("carreteiro");
+
+        when(menuCampaignRepository.findById(id)).thenReturn(Optional.of(entity));
+        when(menuCampaignMapper.entityToDto(entity)).thenReturn(dto);
+
+        final var result = menuCampaignService.findById(id);
+
+        assertNotNull(result);
+        assertEquals(id, result.getId());
+        assertEquals("carreteiro", result.getName());
+
+        verify(menuCampaignRepository).findById(id);
+        verify(menuCampaignMapper).entityToDto(entity);
     }
 }
