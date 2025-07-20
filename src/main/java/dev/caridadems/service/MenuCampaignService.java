@@ -50,7 +50,8 @@ public class MenuCampaignService {
     }
 
     public MenuCampaignDTO findById(Integer id) {
-        Optional<MenuCampaign> menuCampaign = menuCampaignRepository.findById(id);
-        return menuCampaignMapper.entityToDto(menuCampaign.get());
+        MenuCampaign menuCampaign = menuCampaignRepository.findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException("MenuCampaign com ID " + id + " não encontrado"));
+        return menuCampaignMapper.entityToDto(menuCampaign);
     }
 }
