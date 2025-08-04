@@ -8,7 +8,7 @@ import lombok.Getter;
 public enum StatusDonationItemMenuCampaign {
     DONATED (0, "Doado"),
     PARTIALLY_DONATED(1,"Parcialmente Doado"),
-    FOR_DONATED(2,"Para doar");
+    FOR_DONATED(2,"Aguardando Doação");
 
     private final Integer id;
     private final String value;
