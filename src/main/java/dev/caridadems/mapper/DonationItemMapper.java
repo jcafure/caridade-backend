@@ -37,7 +37,8 @@ public class DonationItemMapper {
             }
             dto.setProductDTO(productMapper.converterEntityToDto(entity.getProduct()));
             dto.setQuantity(entity.getQuantity());
-            dto.setStatusItem(entity.getStatusItem().getValue());
+            dto.setStatusItem(entity.getStatusItem() != null ? entity.getStatusItem().getValue()
+                    : StatusDonationItemMenuCampaign.FOR_DONATED.getValue());
             return dto;
         }).toList();
     }
@@ -53,6 +54,7 @@ public class DonationItemMapper {
                     var product = productService.findById(donationDto.getProductDTO().getId());
                     var donationItem = dtoToEntity(donationDto, product);
                     donationItem.setMenuCampaign(menuCampaign);
+                    donationItem.setStatusItem(StatusDonationItemMenuCampaign.FOR_DONATED);
                     return donationItem;
                 }).toList();
     }
