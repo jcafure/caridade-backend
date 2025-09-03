@@ -37,7 +37,7 @@ public class DonationItemMapper {
             }
             dto.setProductDTO(productMapper.converterEntityToDto(entity.getProduct()));
             dto.setQuantity(entity.getQuantity());
-            dto.setStatusItem(entity.getStatusItem().getValue());
+            dto.setStatusItem(entity.getStatusItem() != null ? entity.getStatusItem().getValue() : null);
             return dto;
         }).toList();
     }
