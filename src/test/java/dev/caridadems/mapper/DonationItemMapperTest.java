@@ -115,13 +115,12 @@ class DonationItemMapperTest {
 
         when(productService.findById(1)).thenReturn(mockProduct);
 
-        List<DonationItem> result = donationItemMapper.convertDtoListToEntity(dtoList, menuCampaign);
+        List<DonationItem> result = donationItemMapper.convertDtoListToEntity(dtoList);
 
         assertEquals(1, result.size());
         DonationItem item = result.getFirst();
 
         assertEquals(10.0, item.getQuantity());
-        assertEquals(menuCampaign, item.getMenuCampaign());
         assertEquals(mockProduct, item.getProduct());
     }
 }

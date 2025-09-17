@@ -43,8 +43,7 @@ public class DonationItemMapper {
         }).toList();
     }
 
-    public List<DonationItem> convertDtoListToEntity(List<DonationItemDTO> donationItemDTOS,
-                                                     MenuCampaign menuCampaign) {
+    public List<DonationItem> convertDtoListToEntity(List<DonationItemDTO> donationItemDTOS) {
         if (donationItemDTOS == null){
             return List.of();
         }
@@ -53,7 +52,6 @@ public class DonationItemMapper {
                 .map(donationDto -> {
                     var product = productService.findById(donationDto.getProductDTO().getId());
                     var donationItem = dtoToEntity(donationDto, product);
-                    donationItem.setMenuCampaign(menuCampaign);
                     donationItem.setStatusItem(StatusDonationItemMenuCampaign.FOR_DONATED);
                     return donationItem;
                 }).toList();
