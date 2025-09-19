@@ -33,6 +33,8 @@ class MenuCampaignServiceTest {
     private MenuCampaignMapper menuCampaignMapper;
     @InjectMocks
     private MenuCampaignService menuCampaignService;
+    @Captor
+    private ArgumentCaptor<MenuCampaign> campaignCaptor;
 
     @BeforeEach
     void setUp() {
@@ -209,15 +211,21 @@ class MenuCampaignServiceTest {
     @Test
     void shouldUpdateMenuCampaignSuccessfully() {
         final var dto = new MenuCampaignDTO();
-        final var menuEntity = new MenuCampaign();
         dto.setId(1);
         dto.setName("Feijoada Solidária");
+        final var menuEntity = new MenuCampaign();
         menuEntity.setId(1);
         menuEntity.setMealType("Feijoada Solidária");
 
-        when(menuCampaignRepository.existsById(1)).thenReturn(true);
-        when(menuCampaignMapper.convertDtoToEntity(dto)).thenReturn(menuEntity);
-        when(menuCampaignRepository.save(menuEntity)).thenReturn(menuEntity);
+
+        when(menuCampaignRepository.findById(1)).thenReturn(Optional.of(menuEntity));
+        doAnswer(invocationOnMock -> {
+            MenuCampaignDTO inDto = invocationOnMock.getArgument(0);
+            MenuCampaign target = invocationOnMock.getArgument(1);
+            target.setMealType(inDto.getName());
+            return null;
+        }).when(menuCampaignMapper).applyDtoToEntity(eq(dto), eq(menuEntity));
+        when(menuCampaignRepository.save(any(MenuCampaign.class))).thenAnswer(inv -> inv.getArgument(0));
         when(menuCampaignMapper.entityToDto(menuEntity)).thenReturn(dto);
 
         final var result = menuCampaignService.updateMenu(dto);
@@ -226,10 +234,13 @@ class MenuCampaignServiceTest {
         assertEquals(dto.getId(), result.getId());
         assertEquals(dto.getName(), result.getName());
 
-        verify(menuCampaignRepository).existsById(1);
-        verify(menuCampaignRepository).save(menuEntity);
-        verify(menuCampaignMapper).convertDtoToEntity(dto);
+        verify(menuCampaignRepository).findById(1);
+        verify(menuCampaignMapper).applyDtoToEntity(dto, menuEntity);
         verify(menuCampaignMapper).entityToDto(menuEntity);
+        verify(menuCampaignRepository).save(campaignCaptor.capture());
+
+        var saved = campaignCaptor.getValue();
+        assertEquals("Feijoada Solidária", saved.getMealType());
     }
 
     @Test
@@ -237,13 +248,11 @@ class MenuCampaignServiceTest {
         final var dto = new MenuCampaignDTO();
         dto.setId(999);
 
-        when(menuCampaignRepository.existsById(999)).thenReturn(false);
+        when(menuCampaignRepository.findById(dto.getId())).thenReturn(Optional.empty());
 
         assertThrows(ObjectNotFoundException.class, () -> menuCampaignService.updateMenu(dto));
 
-        verify(menuCampaignRepository).existsById(999);
-        verifyNoMoreInteractions(menuCampaignRepository);
-        verifyNoInteractions(menuCampaignMapper);
+        verify(menuCampaignRepository).findById(dto.getId());
     }
 
     @Test
