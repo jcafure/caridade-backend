@@ -16,6 +16,8 @@ public class CampaingService {
 
     @Transactional
     public CampaignDTO newCampaing(CampaignDTO campaignDTO) {
-        return campaignMapper.entityToDto(campaingRepository.save(campaignMapper.dtoToEntity(campaignDTO)));
+        var entity = campaignMapper.dtoToEntity(campaignDTO);
+        var saved = campaingRepository.save(entity);
+        return campaignMapper.entityToDto(saved);
     }
 }

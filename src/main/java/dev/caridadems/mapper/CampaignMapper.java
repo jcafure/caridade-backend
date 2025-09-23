@@ -2,9 +2,13 @@ package dev.caridadems.mapper;
 
 import dev.caridadems.domain.StatusCampaign;
 import dev.caridadems.dto.CampaignDTO;
+import dev.caridadems.dto.MenuCampaignDTO;
 import dev.caridadems.model.Campaign;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.Optional;
 
 @Component
 @AllArgsConstructor
@@ -20,7 +24,14 @@ public class CampaignMapper {
         campaign.setStatus(StatusCampaign.toEnum(dto.getStatus()));
         campaign.setDateInit(dto.getDateInit());
         campaign.setDateEnd(dto.getDateEnd());
-        campaign.setMenuCampaigns(menuCampaignMapper.convertDtoToEntityList(dto.getMenuCampaignDTOS()));
+
+        if (dto.getMenuCampaignDTOS() != null) {
+            var menus = dto.getMenuCampaignDTOS().stream()
+                    .map(menuCampaignMapper::convertDtoToEntity)
+                    .toList();
+            campaign.setMenuCampaigns(menus);
+
+        }
         return campaign;
     }
 
@@ -29,10 +40,19 @@ public class CampaignMapper {
         dto.setName(entity.getName());
         dto.setStatus(entity.getStatus().getDescription());
         dto.setDescription(entity.getDescription());
-        dto.setMenuCampaignDTOS(menuCampaignMapper.convertEntityToDtoList(entity.getMenuCampaigns()));
         dto.setDateInit(entity.getDateInit());
         dto.setDateEnd(entity.getDateEnd());
+
+        List<MenuCampaignDTO> menuCampaignDTOS = safeList(entity.getMenuCampaigns())
+                .stream()
+                .map(menuCampaignMapper::entityToDto)
+                .toList();
+        dto.setMenuCampaignDTOS(menuCampaignDTOS);
+
         return dto;
     }
 
+    private <T> List<T> safeList(List<T> list){
+        return Optional.ofNullable(list).orElseGet(List::of);
+    }
 }
