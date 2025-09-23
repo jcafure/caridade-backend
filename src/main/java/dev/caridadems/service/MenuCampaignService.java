@@ -2,6 +2,7 @@ package dev.caridadems.service;
 
 import dev.caridadems.dto.MenuCampaignDTO;
 import dev.caridadems.exception.ObjectNotFoundException;
+import dev.caridadems.mapper.DonationItemMapper;
 import dev.caridadems.mapper.MenuCampaignMapper;
 import dev.caridadems.model.MenuCampaign;
 import dev.caridadems.repository.MenuCampaignRepository;
@@ -11,8 +12,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 
 @Service
 @AllArgsConstructor
@@ -20,6 +19,7 @@ public class MenuCampaignService {
 
     private final MenuCampaignRepository menuCampaignRepository;
     private final MenuCampaignMapper menuCampaignMapper;
+    private final DonationItemMapper donationItemMapper;
 
     @Transactional
     public MenuCampaignDTO createMenuCampaign(MenuCampaignDTO dto) {
@@ -39,10 +39,14 @@ public class MenuCampaignService {
 
     @Transactional
     public MenuCampaignDTO updateMenu(MenuCampaignDTO menuCampaignDTO) {
-        if (!menuCampaignRepository.existsById(menuCampaignDTO.getId())){
-            throw new ObjectNotFoundException("Menu com id: " + menuCampaignDTO.getId() + " não encontrado");
-        }
-        return menuCampaignMapper.entityToDto(menuCampaignRepository.save(menuCampaignMapper.convertDtoToEntity(menuCampaignDTO)));
+        var menuCampaignUpdate = menuCampaignRepository.findById(menuCampaignDTO.getId())
+                .orElseThrow(() -> new ObjectNotFoundException("Menu com id: " + menuCampaignDTO.getId() + " não encontrado"));
+        menuCampaignUpdate.setMealType(menuCampaignDTO.getName());
+
+        menuCampaignMapper.applyDtoToEntity(menuCampaignDTO, menuCampaignUpdate);
+
+        return menuCampaignMapper.entityToDto(menuCampaignRepository.save(menuCampaignUpdate));
+
     }
 
     public void delete(Integer id) {
