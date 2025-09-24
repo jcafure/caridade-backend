@@ -8,6 +8,7 @@ import dev.caridadems.dto.MenuCampaignDTO;
 import dev.caridadems.service.CampaingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -22,7 +23,7 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -53,10 +54,10 @@ class CampaignControllerTest {
     @Test
     void testCreateCampaign() throws Exception {
         final var input = new CampaignDTO();
-        input.setName("Campanha do Dia das Crianças");
+        input.setName("Campanha do Mês de setembro");
         input.setDescription("Campanha para arrecadar alimentos e preparar almoços em comunidade.");
-        input.setDateInit(LocalDate.parse("2025-09-15"));
-        input.setDateEnd(LocalDate.parse("2025-10-15"));
+        input.setDateInit(init);
+        input.setDateEnd(end);
         input.setStatus("OPEN");
         input.setMenuCampaignDTOS(List.of(buildMenuDto(18), buildMenuDto(22)));
 
@@ -75,10 +76,16 @@ class CampaignControllerTest {
                         .content(mapper.writeValueAsString(input)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.name", equalTo("Campanha do Dia das Crianças")))
+                .andExpect(jsonPath("$.name", equalTo("Campanha do Mês de setembro")))
                 .andExpect(jsonPath("$.status", equalTo("OPEN")))
                 .andExpect(jsonPath("$.menuCampaignDTOS[0].id", equalTo(18)))
                 .andExpect(jsonPath("$.menuCampaignDTOS[1].id", equalTo(22)));
+
+        ArgumentCaptor<CampaignDTO> captor = ArgumentCaptor.forClass(CampaignDTO.class);
+        verify(campaingService, times(1)).newCampaing(captor.capture());
+        CampaignDTO passed = captor.getValue();
+        assert passed.getName().equals(input.getName());
+        assert passed.getMenuCampaignDTOS().size() == 2;
 
 
     }
