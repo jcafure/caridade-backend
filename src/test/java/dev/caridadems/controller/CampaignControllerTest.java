@@ -83,10 +83,10 @@ class CampaignControllerTest {
 
         ArgumentCaptor<CampaignDTO> captor = ArgumentCaptor.forClass(CampaignDTO.class);
         verify(campaingService, times(1)).newCampaing(captor.capture());
-        CampaignDTO passed = captor.getValue();
+
+        final var passed = captor.getValue();
         assert passed.getName().equals(input.getName());
         assert passed.getMenuCampaignDTOS().size() == 2;
-
 
     }
 
