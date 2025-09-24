@@ -25,13 +25,6 @@ public class CampaignMapper {
         campaign.setDateInit(dto.getDateInit());
         campaign.setDateEnd(dto.getDateEnd());
 
-        if (dto.getMenuCampaignDTOS() != null) {
-            var menus = dto.getMenuCampaignDTOS().stream()
-                    .map(menuCampaignMapper::convertDtoToEntity)
-                    .toList();
-            campaign.setMenuCampaigns(menus);
-
-        }
         return campaign;
     }
 
