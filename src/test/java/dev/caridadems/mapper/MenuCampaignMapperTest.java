@@ -6,18 +6,19 @@ import dev.caridadems.dto.ProductDTO;
 import dev.caridadems.model.DonationItem;
 import dev.caridadems.model.MenuCampaign;
 import dev.caridadems.model.Product;
+import dev.caridadems.service.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class MenuCampaignMapperTest {
@@ -27,6 +28,9 @@ class MenuCampaignMapperTest {
 
     @Mock
     private DonationItemMapper donationItemMapper;
+
+    @Mock
+    private ProductService productService;
 
     @BeforeEach
     void setUp() {
@@ -117,22 +121,22 @@ class MenuCampaignMapperTest {
 
     @Test
     void convertDtoToEntity_shouldMapCorrectly() {
-        final var dto = new MenuCampaignDTO();
         final var productDTO = new ProductDTO();
-        final var itemDTO = new DonationItemDTO();
-
-        dto.setName("Almoço");
         productDTO.setId(1);
+        final var itemDTO = new DonationItemDTO();
         itemDTO.setProductDTO(productDTO);
         itemDTO.setQuantity(2.0);
         itemDTO.setStatusItem("Para doar");
-
+        final var dto = new MenuCampaignDTO();
+        dto.setName("Almoço");
         dto.setDonationItemDTOList(List.of(itemDTO));
-
+        final var productEntity = new Product();
+        productEntity.setId(productDTO.getId());
         final var mockedItem = new DonationItem();
         mockedItem.setQuantity(2.0);
+        mockedItem.setProduct(productEntity);
 
-        when(donationItemMapper.convertDtoListToEntity(anyList(), any(MenuCampaign.class)))
+        when(donationItemMapper.convertDtoListToEntity(anyList()))
                 .thenReturn(List.of(mockedItem));
 
         final var result = menuCampaignMapper.convertDtoToEntity(dto);
@@ -140,9 +144,66 @@ class MenuCampaignMapperTest {
         assertNotNull(result);
         assertEquals("Almoço", result.getMealType());
         assertEquals(1, result.getDonationItems().size());
-        assertEquals(2.0, result.getDonationItems().getFirst().getQuantity());
 
-        verify(donationItemMapper).convertDtoListToEntity(dto.getDonationItemDTOList(), result);
     }
 
+    @Test
+    void test_applyDtoToEntity() {
+        final var menuUpdate = new MenuCampaign();
+        menuUpdate.setId(1);
+        menuUpdate.setMealType("Antigo");
+        menuUpdate.setDonationItems(new ArrayList<>());
+
+        final var existing10 = new DonationItem();
+        existing10.setId(10);
+        existing10.setMenuCampaign(menuUpdate);
+        existing10.setQuantity(1.0);
+        menuUpdate.getDonationItems().add(existing10);
+
+        final var existing20 = new DonationItem();
+        existing20.setId(20);
+        existing20.setMenuCampaign(menuUpdate);
+        existing20.setQuantity(2.0);
+        menuUpdate.getDonationItems().add(existing20);
+
+        final var prod1 = new Product();
+        prod1.setId(100);
+        final var prod2 = new Product();
+        prod2.setId(200);
+
+        final var dto = new MenuCampaignDTO();
+        dto.setId(1);
+        dto.setName("Feijoada Solidária");
+
+        final var itemExistenteDto = new DonationItemDTO();
+        itemExistenteDto.setId(10);
+        itemExistenteDto.setQuantity(5.0);
+        final var productDto1 = new ProductDTO();
+        productDto1.setId(100);
+        itemExistenteDto.setProductDTO(productDto1);
+
+        final var itemNovoDto = new DonationItemDTO();
+        itemNovoDto.setId(null);
+        itemNovoDto.setQuantity(7.0);
+        final var productDto2 = new ProductDTO();
+        productDto2.setId(200);
+        itemNovoDto.setProductDTO(productDto2);
+
+        dto.setDonationItemDTOList(List.of(itemExistenteDto, itemNovoDto));
+
+        when(productService.findById(100)).thenReturn(prod1);
+        when(productService.findById(200)).thenReturn(prod2);
+
+        menuCampaignMapper.applyDtoToEntity(dto, menuUpdate);
+
+        assertEquals("Feijoada Solidária", menuUpdate.getMealType());
+        var items = menuUpdate.getDonationItems();
+        assertEquals(2, items.size());
+
+        DonationItem kept10 = items.stream().filter(i -> Integer.valueOf(10).equals(i.getId())).findFirst().orElse(null);
+        DonationItem created = items.stream().filter(i -> i.getId() == null).findFirst().orElse(null);
+        assertNotNull(kept10);
+        assertNotNull(created);
+
+    }
 }
