@@ -16,13 +16,13 @@ public class CampaignController {
 
     private final CampaignService campaignService;
 
+    @GetMapping
+    public ResponseEntity<PagedModel<CampaignDTO>> getAllCampaigns(Pageable pageable) {
+        return ResponseEntity.ok(campaignService.findAll(pageable));
+    }
+
     @PostMapping("/new-campaign")
     public ResponseEntity<CampaignDTO> createCampaign(@RequestBody CampaignDTO dto) {
         return ResponseEntity.ok(campaignService.newCampaing(dto));
-    }
-
-    @GetMapping("/all")
-    public ResponseEntity<PagedModel<CampaignDTO>> getAllCampaigns(Pageable pageable) {
-        return ResponseEntity.ok(campaignService.findAll(pageable));
     }
 }
