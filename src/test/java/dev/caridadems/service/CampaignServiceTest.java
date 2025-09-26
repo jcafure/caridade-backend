@@ -10,6 +10,11 @@ import dev.caridadems.repository.MenuCampaignRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -17,7 +22,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
-class CampaingServiceTest {
+class CampaignServiceTest {
 
     @Mock
     private CampaignMapper campaignMapper;
@@ -29,7 +34,7 @@ class CampaingServiceTest {
     private MenuCampaignRepository menuCampaignRepository;
 
     @InjectMocks
-    private CampaingService campaingService;
+    private CampaignService campaignService;
 
     private LocalDate init;
     private LocalDate end;
@@ -74,7 +79,7 @@ class CampaingServiceTest {
                 .thenReturn(List.of(menu18, menu22));
         when(campaignMapper.entityToDto(savedEntity)).thenReturn(expectedOutput);
 
-        final var response = campaingService.newCampaing(inputDto);
+        final var response = campaignService.newCampaing(inputDto);
 
         assertThat(response).isNotNull();
 
@@ -94,6 +99,38 @@ class CampaingServiceTest {
         verifyNoMoreInteractions(campaignMapper, campaingRepository, menuCampaignRepository, menu18, menu22);
 
     }
+
+    @Test
+    public void test_ShouldCampaignsAll() {
+       final var campaign = new Campaign();
+        campaign.setName("Campanha Teste all");
+        campaign.setDescription("Jaimelson");
+        campaign.setDateInit(LocalDate.now());
+        campaign.setDateEnd(LocalDate.now().plusDays(10));
+
+        final var campaignDTO = new CampaignDTO();
+        campaignDTO.setName("Campanha Teste all");
+        campaignDTO.setDescription("Jaimelson");
+        campaignDTO.setDateInit(campaign.getDateInit());
+        campaignDTO.setDateEnd(campaign.getDateEnd());
+
+        Pageable pageable = PageRequest.of(0, 5);
+
+        Page<Campaign> page = new PageImpl<>(List.of(campaign), pageable, 1);
+        when(campaingRepository.findAll(pageable)).thenReturn(page);
+        when(campaignMapper.entityToDto(campaign)).thenReturn(campaignDTO);
+
+        PagedModel<CampaignDTO> result = campaignService.findAll(pageable);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getContent()).hasSize(1);
+        assertThat(result.getContent().getFirst().getName()).isEqualTo("Campanha Teste all");
+
+        verify(campaingRepository, times(1)).findAll(pageable);
+        verify(campaignMapper, times(1)).entityToDto(campaign);
+    }
+
+
 
     private static MenuCampaignDTO buildMenuDto(Integer id) {
         final var dto = new MenuCampaignDTO();
