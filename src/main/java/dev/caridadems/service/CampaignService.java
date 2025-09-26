@@ -10,6 +10,7 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -43,9 +44,9 @@ public class CampaignService {
         return campaignMapper.entityToDto(saved);
     }
 
-    public Page<CampaignDTO> findAll(Pageable pageable) {
+    public PagedModel<CampaignDTO> findAll(Pageable pageable) {
         Page<Campaign> campaigns;
         campaigns = campaingRepository.findAll(pageable);
-        return campaigns.map(campaignMapper::entityToDto);
+        return new PagedModel<>(campaigns.map(campaignMapper::entityToDto));
     }
 }
