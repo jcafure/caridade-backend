@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import dev.caridadems.dto.CampaignDTO;
 import dev.caridadems.dto.MenuCampaignDTO;
-import dev.caridadems.service.CampaingService;
+import dev.caridadems.service.CampaignService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class CampaignControllerTest {
 
     @MockitoBean
-    private CampaingService campaingService;
+    private CampaignService campaignService;
 
     @Autowired
     MockMvc mockMvc;
@@ -69,7 +69,7 @@ class CampaignControllerTest {
         returned.setStatus(input.getStatus());
         returned.setMenuCampaignDTOS(List.of(buildMenuDto(18), buildMenuDto(22)));
 
-        when(campaingService.newCampaing(any(CampaignDTO.class))).thenReturn(returned);
+        when(campaignService.newCampaing(any(CampaignDTO.class))).thenReturn(returned);
 
         mockMvc.perform(post("/campaigns/new-campaign")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -82,7 +82,7 @@ class CampaignControllerTest {
                 .andExpect(jsonPath("$.menuCampaignDTOS[1].id", equalTo(22)));
 
         ArgumentCaptor<CampaignDTO> captor = ArgumentCaptor.forClass(CampaignDTO.class);
-        verify(campaingService, times(1)).newCampaing(captor.capture());
+        verify(campaignService, times(1)).newCampaing(captor.capture());
 
         final var passed = captor.getValue();
         assert passed.getName().equals(input.getName());

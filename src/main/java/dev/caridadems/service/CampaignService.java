@@ -17,7 +17,7 @@ import java.util.Objects;
 
 @Service
 @AllArgsConstructor
-public class CampaingService {
+public class CampaignService {
 
     private final CampaignMapper campaignMapper;
     private final CampaingRepository campaingRepository;

@@ -17,7 +17,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
-class CampaingServiceTest {
+class CampaignServiceTest {
 
     @Mock
     private CampaignMapper campaignMapper;
@@ -29,7 +29,7 @@ class CampaingServiceTest {
     private MenuCampaignRepository menuCampaignRepository;
 
     @InjectMocks
-    private CampaingService campaingService;
+    private CampaignService campaignService;
 
     private LocalDate init;
     private LocalDate end;
@@ -74,7 +74,7 @@ class CampaingServiceTest {
                 .thenReturn(List.of(menu18, menu22));
         when(campaignMapper.entityToDto(savedEntity)).thenReturn(expectedOutput);
 
-        final var response = campaingService.newCampaing(inputDto);
+        final var response = campaignService.newCampaing(inputDto);
 
         assertThat(response).isNotNull();
 
