@@ -48,7 +48,7 @@ class CampaignServiceTest {
     }
 
     @Test
-    public void testNewCampaing() {
+    void testNewCampaing() {
         final var inputDto = new CampaignDTO();
         final var menu18 = mock(MenuCampaign.class);
         final var menu22 = mock(MenuCampaign.class);
@@ -101,7 +101,7 @@ class CampaignServiceTest {
     }
 
     @Test
-    public void test_ShouldCampaignsAll() {
+    void test_ShouldCampaignsAll() {
        final var campaign = new Campaign();
         campaign.setName("Campanha Teste all");
         campaign.setDescription("Jaimelson");
@@ -129,8 +129,6 @@ class CampaignServiceTest {
         verify(campaingRepository, times(1)).findAll(pageable);
         verify(campaignMapper, times(1)).entityToDto(campaign);
     }
-
-
 
     private static MenuCampaignDTO buildMenuDto(Integer id) {
         final var dto = new MenuCampaignDTO();

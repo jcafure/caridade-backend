@@ -3,7 +3,6 @@ package dev.caridadems.controller;
 import dev.caridadems.dto.CampaignDTO;
 import dev.caridadems.service.CampaignService;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
