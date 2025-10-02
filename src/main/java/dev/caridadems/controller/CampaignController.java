@@ -24,4 +24,10 @@ public class CampaignController {
     public ResponseEntity<CampaignDTO> createCampaign(@RequestBody CampaignDTO dto) {
         return ResponseEntity.ok(campaignService.newCampaing(dto));
     }
+
+    @PutMapping("/cancelled-campaign/{id}")
+    public ResponseEntity<Void> cancelled(@PathVariable Integer id) {
+        campaignService.canceledCampaign(id);
+        return ResponseEntity.noContent().build();
+    }
 }
