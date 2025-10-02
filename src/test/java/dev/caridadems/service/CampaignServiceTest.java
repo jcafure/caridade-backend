@@ -1,6 +1,5 @@
 package dev.caridadems.service;
 
-import dev.caridadems.domain.StatusCampaign;
 import dev.caridadems.dto.CampaignDTO;
 import dev.caridadems.dto.MenuCampaignDTO;
 import dev.caridadems.mapper.CampaignMapper;
@@ -108,29 +107,26 @@ class CampaignServiceTest {
         campaign.setDescription("Jaimelson");
         campaign.setDateInit(LocalDate.now());
         campaign.setDateEnd(LocalDate.now().plusDays(10));
-        campaign.setStatus(StatusCampaign.OPEN);
 
         final var campaignDTO = new CampaignDTO();
         campaignDTO.setName("Campanha Teste all");
         campaignDTO.setDescription("Jaimelson");
         campaignDTO.setDateInit(campaign.getDateInit());
         campaignDTO.setDateEnd(campaign.getDateEnd());
-        campaignDTO.setStatus("Aberta");
 
         Pageable pageable = PageRequest.of(0, 5);
 
         Page<Campaign> page = new PageImpl<>(List.of(campaign), pageable, 1);
-        when(campaingRepository.findAllByStatus( StatusCampaign.OPEN, pageable)).thenReturn(page);
+        when(campaingRepository.findAll(pageable)).thenReturn(page);
         when(campaignMapper.entityToDto(campaign)).thenReturn(campaignDTO);
 
         PagedModel<CampaignDTO> result = campaignService.findAll(pageable);
 
         assertThat(result).isNotNull();
         assertThat(result.getContent()).hasSize(1);
-        assertThat(result.getContent().getFirst().getName())
-                .isEqualTo("Campanha Teste all");
+        assertThat(result.getContent().getFirst().getName()).isEqualTo("Campanha Teste all");
 
-        verify(campaingRepository, times(1)).findAllByStatus(StatusCampaign.OPEN, pageable);
+        verify(campaingRepository, times(1)).findAll(pageable);
         verify(campaignMapper, times(1)).entityToDto(campaign);
     }
 

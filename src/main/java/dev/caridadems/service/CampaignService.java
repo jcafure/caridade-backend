@@ -1,9 +1,7 @@
 package dev.caridadems.service;
 
-import dev.caridadems.domain.StatusCampaign;
 import dev.caridadems.dto.CampaignDTO;
 import dev.caridadems.dto.MenuCampaignDTO;
-import dev.caridadems.exception.ObjectNotFoundException;
 import dev.caridadems.mapper.CampaignMapper;
 import dev.caridadems.model.Campaign;
 import dev.caridadems.repository.CampaingRepository;
@@ -48,21 +46,7 @@ public class CampaignService {
 
     public PagedModel<CampaignDTO> findAll(Pageable pageable) {
         Page<Campaign> campaigns;
-        campaigns = campaingRepository.findAllByStatus(StatusCampaign.OPEN, pageable);
+        campaigns = campaingRepository.findAll(pageable);
         return new PagedModel<>(campaigns.map(campaignMapper::entityToDto));
-    }
-
-    public void canceledCampaign(Integer idCampaign) {
-        var campaign = findById(idCampaign);
-        campaign.setStatus(StatusCampaign.CANCELED);
-        campaingRepository.save(campaign);
-
-    }
-
-    private Campaign findById(Integer idCampaign) {
-        return campaingRepository.findById(idCampaign)
-                .orElseThrow(() ->
-                        new ObjectNotFoundException("Campaign/MenuCampaign com ID " + idCampaign + " não encontrado")
-                );
     }
 }
