@@ -5,6 +5,7 @@ import dev.caridadems.dto.MenuCampaignDTO;
 import dev.caridadems.mapper.CampaignMapper;
 import dev.caridadems.repository.CampaingRepository;
 import dev.caridadems.repository.MenuCampaignRepository;
+import dev.caridadems.service.validator.CampaignServiceValidator;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,9 +20,11 @@ public class CampaingService {
     private final CampaignMapper campaignMapper;
     private final CampaingRepository campaingRepository;
     private final MenuCampaignRepository menuCampaignRepository;
+    private final CampaignServiceValidator validator;
 
     @Transactional
     public CampaignDTO newCampaing(CampaignDTO campaignDTO) {
+        validator.validateCreate(campaignDTO);
         var entity = campaignMapper.dtoToEntity(campaignDTO);
         var saved = campaingRepository.save(entity);
 
@@ -34,7 +37,6 @@ public class CampaingService {
             var menus = menuCampaignRepository.findAllById(menuIds);
             menus.forEach(menu -> menu.setCampaign(saved));
             saved.setMenuCampaigns(new ArrayList<>(menus));
-
         }
 
         return campaignMapper.entityToDto(saved);
