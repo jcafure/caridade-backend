@@ -5,18 +5,23 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import dev.caridadems.dto.CampaignDTO;
 import dev.caridadems.dto.MenuCampaignDTO;
-import dev.caridadems.service.CampaingService;
+import dev.caridadems.service.CampaignService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -33,7 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class CampaignControllerTest {
 
     @MockitoBean
-    private CampaingService campaingService;
+    private CampaignService campaignService;
 
     @Autowired
     MockMvc mockMvc;
@@ -69,7 +74,7 @@ class CampaignControllerTest {
         returned.setStatus(input.getStatus());
         returned.setMenuCampaignDTOS(List.of(buildMenuDto(18), buildMenuDto(22)));
 
-        when(campaingService.newCampaing(any(CampaignDTO.class))).thenReturn(returned);
+        when(campaignService.newCampaing(any(CampaignDTO.class))).thenReturn(returned);
 
         mockMvc.perform(post("/campaigns/new-campaign")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -82,12 +87,33 @@ class CampaignControllerTest {
                 .andExpect(jsonPath("$.menuCampaignDTOS[1].id", equalTo(22)));
 
         ArgumentCaptor<CampaignDTO> captor = ArgumentCaptor.forClass(CampaignDTO.class);
-        verify(campaingService, times(1)).newCampaing(captor.capture());
+        verify(campaignService, times(1)).newCampaing(captor.capture());
 
         final var passed = captor.getValue();
         assert passed.getName().equals(input.getName());
         assert passed.getMenuCampaignDTOS().size() == 2;
 
+    }
+
+    @Test
+    void shouldReturnPagedCampaigns() throws Exception {
+        final var campaign = new CampaignDTO();
+        campaign.setName("Campanha Teste");
+        campaign.setDescription("Descrição");
+        campaign.setStatus("Aberta");
+        campaign.setDateInit(LocalDate.now());
+        campaign.setDateEnd(LocalDate.now().plusDays(10));
+
+        var page = new PageImpl<>(List.of(campaign), PageRequest.of(0, 10), 1);
+        var pagedModel = new PagedModel<>(page);
+
+        Mockito.when(campaignService.findAll(Mockito.any())).thenReturn(pagedModel);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/campaigns")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].name").value("Campanha Teste"))
+                .andExpect(jsonPath("$.content[0].status").value("Aberta"));
     }
 
     private static MenuCampaignDTO buildMenuDto(Integer id) {
