@@ -7,6 +7,7 @@ import dev.caridadems.model.Campaign;
 import dev.caridadems.model.MenuCampaign;
 import dev.caridadems.repository.CampaingRepository;
 import dev.caridadems.repository.MenuCampaignRepository;
+import dev.caridadems.service.validator.CampaignServiceValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
@@ -33,12 +34,14 @@ class CampaignServiceTest {
     @Mock
     private MenuCampaignRepository menuCampaignRepository;
 
+    @Mock
+    private CampaignServiceValidator validator;
+
     @InjectMocks
     private CampaignService campaignService;
 
     private LocalDate init;
     private LocalDate end;
-
 
     @BeforeEach
     void setUp() {
@@ -81,6 +84,8 @@ class CampaignServiceTest {
 
         final var response = campaignService.newCampaing(inputDto);
 
+        verify(validator, times(1)).validateCreate(inputDto);
+
         assertThat(response).isNotNull();
 
         verify(campaignMapper).dtoToEntity(inputDto);
@@ -96,7 +101,7 @@ class CampaignServiceTest {
 
         verify(campaignMapper).entityToDto(savedEntity);
 
-        verifyNoMoreInteractions(campaignMapper, campaingRepository, menuCampaignRepository, menu18, menu22);
+        verifyNoMoreInteractions(campaignMapper, campaingRepository, menuCampaignRepository, validator, menu18, menu22);
 
     }
 
