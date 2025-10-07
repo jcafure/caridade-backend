@@ -1,5 +1,6 @@
 package dev.caridadems.service;
 
+import dev.caridadems.domain.StatusCampaign;
 import dev.caridadems.dto.CampaignDTO;
 import dev.caridadems.dto.MenuCampaignDTO;
 import dev.caridadems.mapper.CampaignMapper;
@@ -19,8 +20,10 @@ import org.springframework.data.web.PagedModel;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 class CampaignServiceTest {
@@ -106,23 +109,24 @@ class CampaignServiceTest {
     }
 
     @Test
-    void test_ShouldCampaignsAll() {
+    void test_ShouldCampaignsAllWithStatusOpen() {
        final var campaign = new Campaign();
         campaign.setName("Campanha Teste all");
         campaign.setDescription("Jaimelson");
         campaign.setDateInit(LocalDate.now());
         campaign.setDateEnd(LocalDate.now().plusDays(10));
+        campaign.setStatus(StatusCampaign.OPEN);
 
         final var campaignDTO = new CampaignDTO();
         campaignDTO.setName("Campanha Teste all");
         campaignDTO.setDescription("Jaimelson");
         campaignDTO.setDateInit(campaign.getDateInit());
         campaignDTO.setDateEnd(campaign.getDateEnd());
+        var statusCampaigns = List.of(StatusCampaign.OPEN);
 
         Pageable pageable = PageRequest.of(0, 5);
-
         Page<Campaign> page = new PageImpl<>(List.of(campaign), pageable, 1);
-        when(campaingRepository.findAll(pageable)).thenReturn(page);
+        when(campaingRepository.findAllByStatusIn( List.of(StatusCampaign.OPEN), pageable)).thenReturn(page);
         when(campaignMapper.entityToDto(campaign)).thenReturn(campaignDTO);
 
         PagedModel<CampaignDTO> result = campaignService.findAll(pageable);
@@ -131,8 +135,28 @@ class CampaignServiceTest {
         assertThat(result.getContent()).hasSize(1);
         assertThat(result.getContent().getFirst().getName()).isEqualTo("Campanha Teste all");
 
-        verify(campaingRepository, times(1)).findAll(pageable);
+        verify(campaingRepository, times(1)).findAllByStatusIn( List.of(StatusCampaign.OPEN), pageable);
         verify(campaignMapper, times(1)).entityToDto(campaign);
+    }
+
+    @Test
+    public void testShowcancelledCampaign_sucess() {
+        final var campaign = new Campaign();
+        final var idCampaign = 1;
+        campaign.setId(idCampaign);
+        campaign.setName("Campanha Teste cancelled");
+        campaign.setDescription("Jaimelson");
+        campaign.setDateEnd(LocalDate.now());
+        campaign.setStatus(StatusCampaign.OPEN);
+
+        when(campaingRepository.findByIdAndStatusIn(idCampaign, List.of(StatusCampaign.OPEN))).thenReturn(Optional.of(campaign));
+        campaignService.cancelledCampaign(idCampaign);
+
+        assertEquals(StatusCampaign.CANCELED, campaign.getStatus());
+        assertEquals(LocalDate.now(), campaign.getDateEnd());
+        verify(campaingRepository, times(1)).save(campaign);
+
+
     }
 
     private static MenuCampaignDTO buildMenuDto(Integer id) {
