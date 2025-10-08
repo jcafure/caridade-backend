@@ -20,6 +20,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @DataJpaTest
@@ -55,12 +56,11 @@ import java.util.List;
         donationItem.setStatusItem(StatusDonationItemMenuCampaign.FOR_DONATED);
         donationItem.setProduct(product);
         donationItem.setQuantity(15.0);
-        entityManager.persist(donationItem);
 
         final var menuCampaign = new MenuCampaign();
-        menuCampaign.setDonationItems(List.of(donationItem));
+        donationItem.setMenuCampaign(menuCampaign);
+        menuCampaign.setDonationItems(new ArrayList<>(List.of(donationItem)));
         menuCampaign.setMealType("arroz carreteiro");
-        entityManager.persist(menuCampaign);
 
         final var campaign = new Campaign();
         campaign.setName(name);
@@ -69,7 +69,7 @@ import java.util.List;
         campaign.setDateEnd(dateEnd);
         campaign.setStatus(StatusCampaign.OPEN);
         campaign.setCharityGroup(charityGroup);
-        campaign.setMenuCampaigns(List.of(menuCampaign));
+        campaign.setMenuCampaigns(new ArrayList<>(List.of(menuCampaign)));
 
         final var campaignSave = entityManager.persist(campaign);
 

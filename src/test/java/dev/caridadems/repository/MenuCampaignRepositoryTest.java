@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @DataJpaTest
@@ -49,16 +50,15 @@ import java.util.List;
         campaign.setName("atendimento");
         campaign.setDescription("alimentos");
         campaign.setStatus(StatusCampaign.OPEN);
-        testEntityManager.persist(campaign);
 
         final var donationItem = new DonationItem();
         donationItem.setStatusItem(StatusDonationItemMenuCampaign.FOR_DONATED);
         donationItem.setProduct(product);
         donationItem.setQuantity(15.0);
-        testEntityManager.persist(donationItem);
 
         final var menuCampaign = new MenuCampaign();
-        menuCampaign.setDonationItems(List.of(donationItem));
+        donationItem.setMenuCampaign(menuCampaign);
+        menuCampaign.setDonationItems(new ArrayList<>(List.of(donationItem)));
         menuCampaign.setMealType("arroz carreteiro");
 
         final var menuCampaignSave = testEntityManager.persist(menuCampaign);
