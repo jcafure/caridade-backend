@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface MenuCampaignRepository extends JpaRepository<MenuCampaign, Integer>{
+public interface MenuCampaignRepository extends JpaRepository<MenuCampaign, Integer> {
 
     Page<MenuCampaign> findByMealTypeContainingIgnoreCase(String mealType, Pageable page);
 }
