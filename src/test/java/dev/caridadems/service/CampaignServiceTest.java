@@ -3,6 +3,7 @@ package dev.caridadems.service;
 import dev.caridadems.domain.StatusCampaign;
 import dev.caridadems.dto.CampaignDTO;
 import dev.caridadems.dto.MenuCampaignDTO;
+import dev.caridadems.exception.ObjectNotFoundException;
 import dev.caridadems.mapper.CampaignMapper;
 import dev.caridadems.model.Campaign;
 import dev.caridadems.model.MenuCampaign;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -122,7 +124,6 @@ class CampaignServiceTest {
         campaignDTO.setDescription("Jaimelson");
         campaignDTO.setDateInit(campaign.getDateInit());
         campaignDTO.setDateEnd(campaign.getDateEnd());
-        var statusCampaigns = List.of(StatusCampaign.OPEN);
 
         Pageable pageable = PageRequest.of(0, 5);
         Page<Campaign> page = new PageImpl<>(List.of(campaign), pageable, 1);
@@ -140,7 +141,7 @@ class CampaignServiceTest {
     }
 
     @Test
-    public void testShowcancelledCampaign_sucess() {
+    void testShowcancelledCampaign_sucess() {
         final var campaign = new Campaign();
         final var idCampaign = 1;
         campaign.setId(idCampaign);
@@ -155,13 +156,59 @@ class CampaignServiceTest {
         assertEquals(StatusCampaign.CANCELED, campaign.getStatus());
         assertEquals(LocalDate.now(), campaign.getDateEnd());
         verify(campaingRepository, times(1)).save(campaign);
+    }
 
+    @Test
+    void testFindCampaignByIdSuccess(){
+        var idCampaign = 15;
+        final var campaign = buildCampaign(idCampaign);
+        final var campaignDto = buildDTO(campaign.getName(), "Aberta");
 
+        when(campaingRepository.findByIdAndStatusIn(eq(idCampaign), anyList()))
+                .thenReturn(Optional.of(campaign));
+        when(campaignMapper.entityToDto(campaign)).thenReturn(campaignDto);
+
+        CampaignDTO result = campaignService.findById(idCampaign);
+        assertThat(result).isNotNull();
+        assertThat(result.getName()).isEqualTo("Campanha Teste cancelled");
+    }
+
+    @Test
+    void shouldThrowObjectNotFound_whenCampaignNotFoundOrStatusNotAllowed() {
+        Integer id = 99;
+        when(campaingRepository.findByIdAndStatusIn(eq(id), anyList()))
+                .thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> campaignService.findById(id))
+                .isInstanceOf(ObjectNotFoundException.class)
+                .hasMessageContaining("Campanha com ID " + id + " não encontrado");
+
+        verify(campaingRepository, times(1))
+                .findByIdAndStatusIn(eq(id), anyList());
+        verifyNoInteractions(campaignMapper);
     }
 
     private static MenuCampaignDTO buildMenuDto(Integer id) {
         final var dto = new MenuCampaignDTO();
         dto.setId(id);
+        return dto;
+    }
+
+    private Campaign buildCampaign(Integer id) {
+        var campaign = new Campaign();
+        campaign.setId(id);
+        campaign.setName("Campanha Teste cancelled");
+        campaign.setDescription("Jaimelson");
+        campaign.setDateInit(LocalDate.now());
+        campaign.setDateEnd(LocalDate.now().plusDays(5));
+        campaign.setStatus(StatusCampaign.OPEN);
+        return campaign;
+    }
+
+    private CampaignDTO buildDTO(String name, String statusDesc) {
+        CampaignDTO dto = new CampaignDTO();
+        dto.setName(name);
+        dto.setStatus(statusDesc);
         return dto;
     }
 }
