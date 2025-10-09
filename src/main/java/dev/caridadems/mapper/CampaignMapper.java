@@ -30,6 +30,7 @@ public class CampaignMapper {
 
     public CampaignDTO entityToDto(Campaign entity) {
         var dto = new CampaignDTO();
+        dto.setId(entity.getId() != null ? entity.getId() : null);
         dto.setName(entity.getName());
         dto.setStatus(entity.getStatus().getDescription());
         dto.setDescription(entity.getDescription());

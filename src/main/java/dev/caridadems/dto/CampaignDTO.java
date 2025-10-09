@@ -12,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 public class CampaignDTO {
 
+    private Integer id;
     private String name;
     private String description;
     private LocalDate dateInit;
