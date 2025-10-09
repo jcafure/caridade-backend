@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class DonationItem extends BaseEntity{
 
     @ManyToOne
-    @JoinColumn(name = "menu_campaign_id")
+    @JoinColumn(name = "menu_campaign_id", nullable = false)
     private MenuCampaign menuCampaign;
 
     @ManyToOne
