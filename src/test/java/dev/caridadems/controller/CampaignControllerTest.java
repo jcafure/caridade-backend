@@ -14,8 +14,10 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
@@ -24,6 +26,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -104,16 +107,33 @@ class CampaignControllerTest {
         campaign.setDateInit(LocalDate.now());
         campaign.setDateEnd(LocalDate.now().plusDays(10));
 
-        var page = new PageImpl<>(List.of(campaign), PageRequest.of(0, 10), 1);
-        var pagedModel = new PagedModel<>(page);
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<CampaignDTO> page = new PageImpl<CampaignDTO>(
+                Collections.singletonList(campaign), pageable, 1L
+        );
 
-        Mockito.when(campaignService.findAll(Mockito.any())).thenReturn(pagedModel);
+        PagedModel<CampaignDTO> pagedModel = new PagedModel<CampaignDTO>(page);
+
+        Mockito.when(campaignService.findAll(Mockito.any(Pageable.class)))
+                .thenReturn(pagedModel);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/campaigns")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].name").value("Campanha Teste"))
                 .andExpect(jsonPath("$.content[0].status").value("Aberta"));
+    }
+
+    @Test
+    public void shouldCancelCampaignAndReturnNoContent() throws Exception {
+        Integer idCampaign = 5;
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/campaigns/cancelled-campaign/{idCampaign}", idCampaign)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+
+        Mockito.verify(campaignService).cancelledCampaign(idCampaign);
+        Mockito.verifyNoMoreInteractions(campaignService);
     }
 
     private static MenuCampaignDTO buildMenuDto(Integer id) {

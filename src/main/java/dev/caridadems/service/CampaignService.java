@@ -1,7 +1,9 @@
 package dev.caridadems.service;
 
+import dev.caridadems.domain.StatusCampaign;
 import dev.caridadems.dto.CampaignDTO;
 import dev.caridadems.dto.MenuCampaignDTO;
+import dev.caridadems.exception.ObjectNotFoundException;
 import dev.caridadems.mapper.CampaignMapper;
 import dev.caridadems.model.Campaign;
 import dev.caridadems.repository.CampaingRepository;
@@ -14,7 +16,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Objects;
 
 @Service
@@ -52,7 +57,26 @@ public class CampaignService {
 
     public PagedModel<CampaignDTO> findAll(Pageable pageable) {
         Page<Campaign> campaigns;
-        campaigns = campaingRepository.findAll(pageable);
+        campaigns = campaingRepository.findAllByStatusIn(Collections.singletonList(StatusCampaign.OPEN), pageable);
         return new PagedModel<>(campaigns.map(campaignMapper::entityToDto));
+    }
+
+    @Transactional
+    public void cancelledCampaign(Integer idCampaign){
+        campaingRepository.findByIdAndStatusIn(idCampaign, Collections.singletonList(StatusCampaign.OPEN))
+                .ifPresent(campaign -> {
+                    campaign.setStatus(StatusCampaign.CANCELED);
+                    campaign.setDateEnd(LocalDate.now());
+                    campaingRepository.save(campaign);
+                });
+    }
+
+    public CampaignDTO findById(Integer idCampaign){
+        return campaignMapper.entityToDto(findCampaignById(idCampaign));
+    }
+
+    private Campaign findCampaignById(Integer idCampaign) {
+        return campaingRepository.findByIdAndStatusIn(idCampaign, Arrays.asList(StatusCampaign.OPEN, StatusCampaign.FINISH))
+                .orElseThrow(() -> new ObjectNotFoundException("Campanha com ID " + idCampaign + " não encontrado"));
     }
 }
