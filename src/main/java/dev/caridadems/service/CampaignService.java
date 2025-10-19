@@ -46,6 +46,10 @@ public class CampaignService {
         return campaignMapper.entityToDto(saved);
     }
 
+    public CampaignDTO updateCampaign(CampaignDTO campaignDTO) {
+        return null;
+    }
+
     public PagedModel<CampaignDTO> findAll(Pageable pageable) {
         Page<Campaign> campaigns;
         campaigns = campaingRepository.findAll(pageable);
