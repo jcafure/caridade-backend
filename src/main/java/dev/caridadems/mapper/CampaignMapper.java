@@ -46,6 +46,14 @@ public class CampaignMapper {
         return dto;
     }
 
+    public void applyDtoToEntity(CampaignDTO dto, Campaign entity) {
+        entity.setName(dto.getName());
+        entity.setDescription(dto.getDescription());
+        entity.setStatus(StatusCampaign.toEnum(dto.getStatus()));
+        entity.setDateInit(dto.getDateInit());
+        entity.setDateEnd(dto.getDateEnd());
+    }
+
     private <T> List<T> safeList(List<T> list){
         return Optional.ofNullable(list).orElseGet(List::of);
     }

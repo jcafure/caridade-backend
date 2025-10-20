@@ -17,10 +17,8 @@ import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -51,8 +49,30 @@ public class CampaignService {
         return campaignMapper.entityToDto(saved);
     }
 
+    @Transactional
     public CampaignDTO updateCampaign(CampaignDTO campaignDTO) {
-        return null;
+        var campaignExist = findCampaignById(campaignDTO.getId());
+        campaignMapper.applyDtoToEntity(campaignDTO, campaignExist);
+        validator.validateUpdate(campaignDTO);
+
+        var existsMenus = campaignExist.getMenuCampaigns();
+        var idsMenuFilteredExist = campaignDTO.getMenuCampaignDTOS()
+                .stream().map(MenuCampaignDTO::getId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+        existsMenus.removeIf(menu -> !idsMenuFilteredExist.contains(menu.getId()));
+
+        var menusToAdd = menuCampaignRepository.findAllById(idsMenuFilteredExist)
+                .stream()
+                .filter(menu -> existsMenus
+                        .stream()
+                        .noneMatch(m -> m.getId().equals(menu.getId())))
+                .toList();
+
+
+        menusToAdd.forEach(m -> m.setCampaign(campaignExist));
+        campaignExist.getMenuCampaigns().addAll(menusToAdd);
+        return campaignDTO;
     }
 
     public PagedModel<CampaignDTO> findAll(Pageable pageable) {

@@ -11,6 +11,11 @@ public class CampaignServiceValidator {
         validateDates(campaignDTO);
     }
 
+    public void validateUpdate(CampaignDTO campaignDTO) {
+        validateName(campaignDTO);
+        validateDates(campaignDTO);
+    }
+
     protected void validateName(CampaignDTO dto) {
         if (dto.getName() == null || dto.getName().isBlank()) {
             throw new IllegalArgumentException("O nome da campanha é obrigatório.");
