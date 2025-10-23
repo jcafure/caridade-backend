@@ -17,8 +17,10 @@ import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -55,24 +57,7 @@ public class CampaignService {
         campaignMapper.applyDtoToEntity(campaignDTO, campaignExist);
         validator.validateUpdate(campaignDTO);
 
-        var existsMenus = campaignExist.getMenuCampaigns();
-        var idsMenuFilteredExist = campaignDTO.getMenuCampaignDTOS()
-                .stream().map(MenuCampaignDTO::getId)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
-        existsMenus.removeIf(menu -> !idsMenuFilteredExist.contains(menu.getId()));
-
-        var menusToAdd = menuCampaignRepository.findAllById(idsMenuFilteredExist)
-                .stream()
-                .filter(menu -> existsMenus
-                        .stream()
-                        .noneMatch(m -> m.getId().equals(menu.getId())))
-                .toList();
-
-
-        menusToAdd.forEach(m -> m.setCampaign(campaignExist));
-        campaignExist.getMenuCampaigns().addAll(menusToAdd);
-        return campaignDTO;
+        return campaignMapper.entityToDto(campaingRepository.save(campaignExist));
     }
 
     public PagedModel<CampaignDTO> findAll(Pageable pageable) {
@@ -89,10 +74,6 @@ public class CampaignService {
                     campaign.setDateEnd(LocalDate.now());
                     campaingRepository.save(campaign);
                 });
-    }
-
-    public CampaignDTO findById(Integer idCampaign){
-        return campaignMapper.entityToDto(findCampaignById(idCampaign));
     }
 
     private Campaign findCampaignById(Integer idCampaign) {
