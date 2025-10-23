@@ -1,5 +1,6 @@
 package dev.caridadems.controller;
 
+import dev.caridadems.dto.AddMenuToCampaignRequest;
 import dev.caridadems.dto.CampaignDTO;
 import dev.caridadems.service.CampaignService;
 import lombok.AllArgsConstructor;
@@ -34,6 +35,13 @@ public class CampaignController {
     public ResponseEntity<CampaignDTO> cancelledCampaign(@PathVariable Integer idCampaign) {
         campaignService.cancelledCampaign(idCampaign);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{campaignId}/add-menu-to-campaign")
+    public ResponseEntity<CampaignDTO> addMenuToCampaign(@PathVariable Integer idCampaign,
+                                               @RequestBody AddMenuToCampaignRequest request) {
+        return null;
+
     }
 
 }

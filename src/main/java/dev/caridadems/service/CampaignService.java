@@ -6,6 +6,7 @@ import dev.caridadems.dto.MenuCampaignDTO;
 import dev.caridadems.exception.ObjectNotFoundException;
 import dev.caridadems.mapper.CampaignMapper;
 import dev.caridadems.model.Campaign;
+import dev.caridadems.model.MenuCampaign;
 import dev.caridadems.repository.CampaingRepository;
 import dev.caridadems.repository.MenuCampaignRepository;
 import dev.caridadems.service.validator.CampaignServiceValidator;
@@ -17,10 +18,8 @@ import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -54,10 +53,31 @@ public class CampaignService {
     @Transactional
     public CampaignDTO updateCampaign(CampaignDTO campaignDTO) {
         var campaignExist = findCampaignById(campaignDTO.getId());
-        campaignMapper.applyDtoToEntity(campaignDTO, campaignExist);
         validator.validateUpdate(campaignDTO);
+        campaignMapper.applyDtoToEntity(campaignDTO, campaignExist);
 
         return campaignMapper.entityToDto(campaingRepository.save(campaignExist));
+    }
+
+    public CampaignDTO addMenusToCampaign(Integer idCampaign, List<Integer> idsMenus) {
+        var campaignExist = findCampaignById(idCampaign);
+        var ids = Optional.ofNullable(idsMenus).orElseGet(List::of)
+                .stream().filter(Objects::nonNull).collect(Collectors.toSet());
+
+        if (ids.isEmpty()) return campaignMapper.entityToDto(campaignExist);
+
+        var menusExistsInCampaign = campaignExist.getMenuCampaigns().stream()
+                .map(MenuCampaign::getId).collect(Collectors.toSet());
+
+        var menuIdsToAdd = new HashSet<>(ids);
+        menuIdsToAdd.removeAll(menusExistsInCampaign);
+
+        menuIdsToAdd.forEach(id ->
+                menuCampaignRepository.findById(id)
+                        .ifPresent(menu -> menu.setCampaign(campaignExist))
+        );
+
+        return campaignMapper.entityToDto(campaignExist);
     }
 
     public PagedModel<CampaignDTO> findAll(Pageable pageable) {
