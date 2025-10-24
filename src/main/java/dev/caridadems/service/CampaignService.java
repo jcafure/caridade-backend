@@ -110,6 +110,10 @@ public class CampaignService {
                 });
     }
 
+    public CampaignDTO findById(Integer idCampaign){
+        return campaignMapper.entityToDto(findCampaignById(idCampaign));
+    }
+
     private Campaign findCampaignById(Integer idCampaign) {
         return campaingRepository.findByIdAndStatusIn(idCampaign, Arrays.asList(StatusCampaign.OPEN, StatusCampaign.FINISH))
                 .orElseThrow(() -> new ObjectNotFoundException("Campanha com ID " + idCampaign + " não encontrado"));
