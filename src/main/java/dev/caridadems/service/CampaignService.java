@@ -53,14 +53,6 @@ public class CampaignService {
     }
 
     @Transactional
-    public CampaignDTO updateCampaign(CampaignDTO campaignDTO) {
-        var campaignExist = findCampaignById(campaignDTO.getId());
-        //campaignMapper.applyDtoToEntity(campaignDTO, campaignExist);
-
-        return campaignMapper.entityToDto(campaingRepository.save(campaignExist));
-    }
-
-    @Transactional
     public CampaignDTO updateCampaignRegisters(Integer idCampaign, CampaignUpdateDTO dtoRequest) {
         var campaignExist = findCampaignById(idCampaign);
         validator.validateUpdate(dtoRequest);
