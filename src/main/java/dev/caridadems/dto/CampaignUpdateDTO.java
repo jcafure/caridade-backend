@@ -12,5 +12,5 @@ public class CampaignUpdateDTO {
     private String description;
     private LocalDate dateInit;
     private LocalDate dateEnd;
-    private List<Integer> idsmenus = new ArrayList<>();
+    private List<Integer> idsMenus = new ArrayList<>();
 }

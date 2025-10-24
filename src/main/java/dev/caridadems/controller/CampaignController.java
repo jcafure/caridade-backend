@@ -39,10 +39,9 @@ public class CampaignController {
     }
 
     @PostMapping("/{campaignId}/update-register-campaign")
-    public ResponseEntity<CampaignDTO> addMenuToCampaign(@PathVariable Integer idCampaign,
+    public ResponseEntity<CampaignDTO> addMenuToCampaign(@PathVariable("campaignId") Integer idCampaign,
                                                @RequestBody CampaignUpdateDTO request) {
         return ResponseEntity.ok(campaignService.updateCampaignRegisters(idCampaign, request));
 
     }
-
 }

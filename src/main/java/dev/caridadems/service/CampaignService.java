@@ -66,14 +66,14 @@ public class CampaignService {
         validator.validateUpdate(dtoRequest);
         campaignMapper.applyDtoToEntity(dtoRequest, campaignExist);
 
-        if (dtoRequest.getIdsmenus() != null && !dtoRequest.getIdsmenus().isEmpty()){
-            addMenusToCampaign(campaignExist, dtoRequest.getIdsmenus());
+        if (dtoRequest.getIdsMenus() != null && !dtoRequest.getIdsMenus().isEmpty()){
+            addMenusToCampaign(campaignExist, dtoRequest.getIdsMenus());
         }
 
         return campaignMapper.entityToDto(campaingRepository.save(campaignExist));
     }
 
-    public CampaignDTO addMenusToCampaign(Campaign campaign,List<Integer> idsMenus) {
+    private void addMenusToCampaign(Campaign campaign, List<Integer> idsMenus) {
 
         var ids = Optional.ofNullable(idsMenus).orElseGet(List::of)
                 .stream().filter(Objects::nonNull).collect(Collectors.toSet());
@@ -91,7 +91,7 @@ public class CampaignService {
             campaign.getMenuCampaigns().add(menu);
         });
 
-        return campaignMapper.entityToDto(campaign);
+        campaignMapper.entityToDto(campaign);
     }
 
     public PagedModel<CampaignDTO> findAll(Pageable pageable) {
