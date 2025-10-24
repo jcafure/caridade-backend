@@ -2,6 +2,7 @@ package dev.caridadems.service;
 
 import dev.caridadems.domain.StatusCampaign;
 import dev.caridadems.dto.CampaignDTO;
+import dev.caridadems.dto.CampaignUpdateDTO;
 import dev.caridadems.dto.MenuCampaignDTO;
 import dev.caridadems.exception.ObjectNotFoundException;
 import dev.caridadems.mapper.CampaignMapper;
@@ -10,6 +11,7 @@ import dev.caridadems.model.MenuCampaign;
 import dev.caridadems.repository.CampaingRepository;
 import dev.caridadems.repository.MenuCampaignRepository;
 import dev.caridadems.service.validator.CampaignServiceValidator;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -53,31 +55,43 @@ public class CampaignService {
     @Transactional
     public CampaignDTO updateCampaign(CampaignDTO campaignDTO) {
         var campaignExist = findCampaignById(campaignDTO.getId());
-        validator.validateUpdate(campaignDTO);
-        campaignMapper.applyDtoToEntity(campaignDTO, campaignExist);
+        //campaignMapper.applyDtoToEntity(campaignDTO, campaignExist);
 
         return campaignMapper.entityToDto(campaingRepository.save(campaignExist));
     }
 
-    public CampaignDTO addMenusToCampaign(Integer idCampaign, List<Integer> idsMenus) {
+    @Transactional
+    public CampaignDTO updateCampaignRegisters(Integer idCampaign, CampaignUpdateDTO dtoRequest) {
         var campaignExist = findCampaignById(idCampaign);
+        validator.validateUpdate(dtoRequest);
+        campaignMapper.applyDtoToEntity(dtoRequest, campaignExist);
+
+        if (dtoRequest.getIdsmenus() != null && !dtoRequest.getIdsmenus().isEmpty()){
+            addMenusToCampaign(campaignExist, dtoRequest.getIdsmenus());
+        }
+
+        return campaignMapper.entityToDto(campaingRepository.save(campaignExist));
+    }
+
+    public CampaignDTO addMenusToCampaign(Campaign campaign,List<Integer> idsMenus) {
+
         var ids = Optional.ofNullable(idsMenus).orElseGet(List::of)
                 .stream().filter(Objects::nonNull).collect(Collectors.toSet());
 
-        if (ids.isEmpty()) return campaignMapper.entityToDto(campaignExist);
-
-        var menusExistsInCampaign = campaignExist.getMenuCampaigns().stream()
+        var menusExistsInCampaign = campaign.getMenuCampaigns().stream()
                 .map(MenuCampaign::getId).collect(Collectors.toSet());
 
         var menuIdsToAdd = new HashSet<>(ids);
         menuIdsToAdd.removeAll(menusExistsInCampaign);
 
-        menuIdsToAdd.forEach(id ->
-                menuCampaignRepository.findById(id)
-                        .ifPresent(menu -> menu.setCampaign(campaignExist))
-        );
+        menuIdsToAdd.forEach(id -> {
+            var menu = menuCampaignRepository.findById(id)
+                    .orElseThrow(() -> new EntityNotFoundException("MenuCampaign id=" + id + " não encontrado"));
+            menu.setCampaign(campaign);
+            campaign.getMenuCampaigns().add(menu);
+        });
 
-        return campaignMapper.entityToDto(campaignExist);
+        return campaignMapper.entityToDto(campaign);
     }
 
     public PagedModel<CampaignDTO> findAll(Pageable pageable) {

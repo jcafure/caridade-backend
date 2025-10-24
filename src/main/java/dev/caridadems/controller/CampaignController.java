@@ -2,6 +2,7 @@ package dev.caridadems.controller;
 
 import dev.caridadems.dto.AddMenuToCampaignRequest;
 import dev.caridadems.dto.CampaignDTO;
+import dev.caridadems.dto.CampaignUpdateDTO;
 import dev.caridadems.service.CampaignService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -37,10 +38,10 @@ public class CampaignController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/{campaignId}/add-menu-to-campaign")
+    @PostMapping("/{campaignId}/update-register-campaign")
     public ResponseEntity<CampaignDTO> addMenuToCampaign(@PathVariable Integer idCampaign,
-                                               @RequestBody AddMenuToCampaignRequest request) {
-        return null;
+                                               @RequestBody CampaignUpdateDTO request) {
+        return ResponseEntity.ok(campaignService.updateCampaignRegisters(idCampaign, request));
 
     }
 
