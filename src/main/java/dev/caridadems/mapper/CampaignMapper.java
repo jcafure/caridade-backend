@@ -2,6 +2,7 @@ package dev.caridadems.mapper;
 
 import dev.caridadems.domain.StatusCampaign;
 import dev.caridadems.dto.CampaignDTO;
+import dev.caridadems.dto.CampaignUpdateDTO;
 import dev.caridadems.dto.MenuCampaignDTO;
 import dev.caridadems.model.Campaign;
 import lombok.AllArgsConstructor;
@@ -30,6 +31,7 @@ public class CampaignMapper {
 
     public CampaignDTO entityToDto(Campaign entity) {
         var dto = new CampaignDTO();
+        dto.setId(entity.getId() != null ? entity.getId() : null);
         dto.setName(entity.getName());
         dto.setStatus(entity.getStatus().getDescription());
         dto.setDescription(entity.getDescription());
@@ -43,6 +45,13 @@ public class CampaignMapper {
         dto.setMenuCampaignDTOS(menuCampaignDTOS);
 
         return dto;
+    }
+
+    public void applyDtoToEntity(CampaignUpdateDTO dto, Campaign entity) {
+        entity.setName(dto.getName());
+        entity.setDescription(dto.getDescription());
+        entity.setDateInit(dto.getDateInit());
+        entity.setDateEnd(dto.getDateEnd());
     }
 
     private <T> List<T> safeList(List<T> list){

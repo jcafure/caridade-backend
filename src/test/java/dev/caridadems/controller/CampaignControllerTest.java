@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import dev.caridadems.dto.CampaignDTO;
+import dev.caridadems.dto.CampaignUpdateDTO;
 import dev.caridadems.dto.MenuCampaignDTO;
 import dev.caridadems.service.CampaignService;
 import org.junit.jupiter.api.BeforeEach;
@@ -134,6 +135,35 @@ class CampaignControllerTest {
 
         Mockito.verify(campaignService).cancelledCampaign(idCampaign);
         Mockito.verifyNoMoreInteractions(campaignService);
+    }
+
+    @Test
+    void shouldUpdateCampaignAndReturnOk() throws Exception {
+        var idCampaign = 7;
+        var dtoRequest = new CampaignUpdateDTO();
+        dtoRequest.setName("Campanha do Dia das Crianças");
+        dtoRequest.setDescription("Campanha para arrecadar alimentos e preparar almoços em comunidade.");
+        dtoRequest.setDateInit(init);
+        dtoRequest.setDateEnd(end);
+        dtoRequest.setIdsMenus(List.of(20));
+
+        var dtoResponse = new CampaignDTO();
+        dtoResponse.setName("Campanha do Dia das Crianças");
+        dtoResponse.setDescription(dtoRequest.getDescription());
+
+        Mockito.when(campaignService.updateCampaignRegisters(eq(idCampaign), Mockito.any(CampaignUpdateDTO.class)))
+                .thenReturn(dtoResponse);
+
+        mockMvc.perform(post("/campaigns/{campaignId}/update-register-campaign", idCampaign)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(dtoRequest)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.name").value("Campanha do Dia das Crianças"))
+                .andExpect(jsonPath("$.description").value("Campanha para arrecadar alimentos e preparar almoços em comunidade."));
+
+        Mockito.verify(campaignService, Mockito.times(1))
+                .updateCampaignRegisters(eq(idCampaign), Mockito.any(CampaignUpdateDTO.class));
     }
 
     private static MenuCampaignDTO buildMenuDto(Integer id) {

@@ -1,23 +1,16 @@
 package dev.caridadems.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class CampaignDTO {
-
-    private Integer id;
+public class CampaignUpdateDTO {
     private String name;
     private String description;
     private LocalDate dateInit;
     private LocalDate dateEnd;
-    private String status;
-    List<MenuCampaignDTO> menuCampaignDTOS;
-
+    private List<Integer> idsMenus = new ArrayList<>();
 }
