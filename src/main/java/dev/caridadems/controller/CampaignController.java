@@ -1,6 +1,5 @@
 package dev.caridadems.controller;
 
-import dev.caridadems.dto.AddMenuToCampaignRequest;
 import dev.caridadems.dto.CampaignDTO;
 import dev.caridadems.dto.CampaignUpdateDTO;
 import dev.caridadems.service.CampaignService;
