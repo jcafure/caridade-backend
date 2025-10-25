@@ -2,6 +2,7 @@ package dev.caridadems.service;
 
 import dev.caridadems.domain.StatusCampaign;
 import dev.caridadems.dto.CampaignDTO;
+import dev.caridadems.dto.CampaignUpdateDTO;
 import dev.caridadems.dto.MenuCampaignDTO;
 import dev.caridadems.exception.ObjectNotFoundException;
 import dev.caridadems.mapper.CampaignMapper;
@@ -20,6 +21,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -175,7 +178,7 @@ class CampaignServiceTest {
 
     @Test
     void shouldThrowObjectNotFound_whenCampaignNotFoundOrStatusNotAllowed() {
-        Integer id = 99;
+        var id = 99;
         when(campaingRepository.findByIdAndStatusIn(eq(id), anyList()))
                 .thenReturn(Optional.empty());
 
@@ -187,6 +190,80 @@ class CampaignServiceTest {
                 .findByIdAndStatusIn(eq(id), anyList());
         verifyNoInteractions(campaignMapper);
     }
+
+    @Test
+    void updateCampaignRegisters_shouldAddMenus() {
+        var idCampaign = 7;
+        var existing = new Campaign();
+        existing.setId(idCampaign);
+        existing.setMenuCampaigns(new ArrayList<>());
+
+        var dtoReq = new CampaignUpdateDTO();
+        dtoReq.setName("Campanha Y");
+        dtoReq.setIdsMenus(List.of(18, 22));
+
+        var m18 = new MenuCampaign();
+        m18.setId(18);
+        var m22 = new MenuCampaign();
+        m22.setId(22);
+
+        when(campaingRepository.findByIdAndStatusIn(idCampaign, Arrays.asList(StatusCampaign.OPEN, StatusCampaign.FINISH))).thenReturn(Optional.of(existing));
+        when(menuCampaignRepository.findById(18)).thenReturn(Optional.of(m18));
+        when(menuCampaignRepository.findById(22)).thenReturn(Optional.of(m22));
+        when(campaingRepository.save(existing)).thenReturn(existing);
+
+        var dtoResp = new CampaignDTO();
+        when(campaignMapper.entityToDto(existing)).thenReturn(dtoResp);
+
+        var result = campaignService.updateCampaignRegisters(idCampaign, dtoReq);
+
+        verify(validator).validateUpdate(dtoReq);
+        verify(campaignMapper).applyDtoToEntity(dtoReq, existing);
+        verify(menuCampaignRepository, times(1)).findById(18);
+        verify(menuCampaignRepository, times(1)).findById(22);
+        verify(campaingRepository).save(existing);
+
+        assertThat(existing.getMenuCampaigns()).extracting("id").containsExactlyInAnyOrder(18, 22);
+        assertThat(m18.getCampaign()).isEqualTo(existing);
+        assertThat(m22.getCampaign()).isEqualTo(existing);
+
+        assertThat(result).isNotNull();
+    }
+
+    @Test
+    void updateCampaignRegisters_shouldUpdateSimpleFields_whenIdsMenusNullOrEmpty() {
+        var idCampaign = 7;
+        var existing = new Campaign();
+        existing.setId(idCampaign);
+        existing.setMenuCampaigns(new java.util.ArrayList<>());
+
+        var dtoReq = new CampaignUpdateDTO();
+        dtoReq.setName("Campanha Outubro");
+        dtoReq.setDescription("Desc");
+        dtoReq.setDateInit(init);
+        dtoReq.setDateEnd(end);
+        dtoReq.setIdsMenus(null);
+
+        var dtoResp = new CampaignDTO();
+        dtoResp.setName("Campanha Outubro");
+
+        when(campaingRepository.findByIdAndStatusIn(idCampaign, Arrays.asList(StatusCampaign.OPEN, StatusCampaign.FINISH)))
+                .thenReturn(Optional.of(existing));
+        when(campaingRepository.save(existing)).thenReturn(existing);
+        when(campaignMapper.entityToDto(existing)).thenReturn(dtoResp);
+
+        var result = campaignService.updateCampaignRegisters(idCampaign, dtoReq);
+
+        verify(validator).validateUpdate(dtoReq);
+        verify(campaignMapper).applyDtoToEntity(dtoReq, existing);
+        verify(campaingRepository).save(existing);
+        verifyNoInteractions(menuCampaignRepository);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getName()).isEqualTo("Campanha Outubro");
+        assertThat(existing.getMenuCampaigns()).isEmpty();
+    }
+
 
     private static MenuCampaignDTO buildMenuDto(Integer id) {
         final var dto = new MenuCampaignDTO();
