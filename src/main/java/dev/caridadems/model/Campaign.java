@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -28,4 +29,8 @@ public class Campaign extends BaseEntity{
 
     @OneToMany(mappedBy = "campaign", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MenuCampaign> menuCampaigns;
+
+    //o certo:
+//    @OneToMany(mappedBy = "campaign", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private Set<MenuCampaignV2> menuCampaigns;
 }
