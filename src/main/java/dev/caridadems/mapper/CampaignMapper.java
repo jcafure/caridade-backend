@@ -54,6 +54,32 @@ public class CampaignMapper {
         entity.setDateEnd(dto.getDateEnd());
     }
 
+    public CampaignDTO entityToDtoBasic(Campaign entity) {
+        var dto = new CampaignDTO();
+        dto.setId(entity.getId());
+        dto.setName(entity.getName());
+        dto.setDescription(entity.getDescription());
+        dto.setDateInit(entity.getDateInit());
+        dto.setDateEnd(entity.getDateEnd());
+        dto.setStatus(entity.getStatus() != null ? entity.getStatus().getDescription() : null);
+        // menuCampaignDTOS será preenchido no service
+        return dto;
+    }
+
+    public Campaign dtoToEntityBasic(CampaignDTO dto) {
+        var entity = new Campaign();
+        entity.setId(dto.getId());
+        entity.setName(dto.getName());
+        entity.setDescription(dto.getDescription());
+        entity.setDateInit(dto.getDateInit());
+        entity.setDateEnd(dto.getDateEnd());
+        // status: ajuste conforme seu enum (ex.: fromDescription)
+        // entity.setStatus(StatusCampaign.fromDescription(dto.getStatus()));
+        return entity;
+    }
+
+
+
     private <T> List<T> safeList(List<T> list){
         return Optional.ofNullable(list).orElseGet(List::of);
     }
